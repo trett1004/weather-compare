@@ -24,10 +24,11 @@ export async function fetchForecast(lat, lon) {
   const params = new URLSearchParams({
     latitude: lat,
     longitude: lon,
-    daily:
-      "weathercode,temperature_2m_max,temperature_2m_min,precipitation_sum,windspeed_10m_max",
+    hourly:
+      "temperature_2m,precipitation,weathercode,windspeed_10m,windgusts_10m,winddirection_10m",
+    wind_speed_unit: "kn",
     timezone: "auto",
-    forecast_days: "10",
+    forecast_days: "5",
   });
 
   const response = await fetch(`${FORECAST_URL}?${params.toString()}`);

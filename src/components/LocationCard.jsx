@@ -62,7 +62,7 @@ export function LocationCard({ location, onRemove }) {
       )}
 
       {forecastState.status === "ready" && (
-        <ForecastTable daily={forecastState.data.daily} />
+        <ForecastTable hourly={forecastState.data.hourly} />
       )}
     </section>
   );
