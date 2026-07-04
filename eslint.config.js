@@ -3,7 +3,7 @@ import globals from "globals";
 import reactPlugin from "@eslint-react/eslint-plugin";
 import reactHooks from "eslint-plugin-react-hooks";
 
-export default [
+const baseConfig = [
   js.configs.recommended,
   {
     files: ["src/**/*.{js,jsx}"],
@@ -34,3 +34,14 @@ export default [
     },
   },
 ];
+
+const testConfig = {
+  files: ["src/**/__tests__/**/*.{js,jsx}", "src/**/*.test.{js,jsx}"],
+  languageOptions: {
+    globals: {
+      ...globals.jest,
+    },
+  },
+};
+
+export default [...baseConfig, testConfig];
