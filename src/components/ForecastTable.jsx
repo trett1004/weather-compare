@@ -106,7 +106,29 @@ function formatMetric(value, unit, digits = 0) {
   return `${value.toFixed(digits)}${unit}`;
 }
 
-export function ForecastTable({ hourly }) {
+function hasMetricValue(value) {
+  return typeof value === "number" && Number.isFinite(value);
+}
+
+function greyClouds(svg) {
+  return svg
+    .replace(/#F3F7FE/gi, "#9FA3AD")
+    .replace(/#E6EFFC/gi, "#8D919B");
+}
+
+function isDaytime(time, daily) {
+  if (!daily || !daily.time || !daily.sunrise || !daily.sunset) {
+    return true;
+  }
+  const day = time.slice(0, 10);
+  const dayIndex = daily.time.indexOf(day);
+  if (dayIndex === -1) {
+    return true;
+  }
+  return time >= daily.sunrise[dayIndex] && time < daily.sunset[dayIndex];
+}
+
+export function ForecastTable({ hourly, daily }) {
   const columns = sampleForecastColumns(hourly);
   const dayGroups = groupColumnsByDay(columns);
 
@@ -134,26 +156,49 @@ export function ForecastTable({ hourly }) {
         <tbody>
           <tr className="row-icon">
             <th className="row-label">Wetter</th>
-            {columns.map((column) => (
-              <td key={`${column.time}-weather`}>
-                <span className="weather-icon">
-                  {WEATHER_ICONS[column.weatherCode] || "❓"}
-                </span>
-              </td>
-            ))}
+            {columns.map((column) => {
+              const weather = WEATHER_ICONS[column.weatherCode];
+              const isDay = isDaytime(column.time, daily);
+              const icon = weather
+                ? (isDay ? weather.dayIcon : weather.nightIcon)
+                : "❓";
+              const description = weather ? weather.description : "unknown weather";
+              return (
+                <td key={`${column.time}-weather`}>
+                  <span
+                    className="weather-icon"
+                    title={description}
+                    aria-label={description}
+                  >
+                    {typeof icon === "string" && icon.trimStart().startsWith("<svg") ? (
+                      <span
+                        className="weather-icon-image"
+                        dangerouslySetInnerHTML={{ __html: greyClouds(icon) }}
+                      />
+                    ) : (
+                      icon
+                    )}
+                  </span>
+                </td>
+              );
+            })}
           </tr>
           <tr className="row-temp">
             <th className="row-label">Temperatur [°C]</th>
             {columns.map((column) => (
               <td key={`${column.time}-temp`}>
-                <span
-                  className="metric-badge"
-                  style={{
-                    backgroundColor: getTemperatureColor(column.temperature),
-                  }}
-                >
-                  {formatMetric(column.temperature, "°", 0)}
-                </span>
+                {hasMetricValue(column.temperature) ? (
+                  <span
+                    className="metric-badge"
+                    style={{
+                      backgroundColor: getTemperatureColor(column.temperature),
+                    }}
+                  >
+                    {formatMetric(column.temperature, "°", 0)}
+                  </span>
+                ) : (
+                  <span className="plain-metric">-</span>
+                )}
               </td>
             ))}
           </tr>
@@ -161,7 +206,7 @@ export function ForecastTable({ hourly }) {
             <th className="row-label">Regen [mm]</th>
             {columns.map((column) => (
               <td key={`${column.time}-rain`}>
-                {column.precipitation > 0 ? (
+                {hasMetricValue(column.precipitation) && column.precipitation > 0 ? (
                   <span
                     className="metric-badge"
                     style={{
@@ -182,14 +227,18 @@ export function ForecastTable({ hourly }) {
             <th className="row-label">Wind [kn]</th>
             {columns.map((column) => (
               <td key={`${column.time}-wind`}>
-                <span
-                  className="metric-badge"
-                  style={{
-                    backgroundColor: getWindSpeedColor(column.windSpeed),
-                  }}
-                >
-                  {formatMetric(column.windSpeed, "", 0)}
-                </span>
+                {hasMetricValue(column.windSpeed) ? (
+                  <span
+                    className="metric-badge"
+                    style={{
+                      backgroundColor: getWindSpeedColor(column.windSpeed),
+                    }}
+                  >
+                    {formatMetric(column.windSpeed, "", 0)}
+                  </span>
+                ) : (
+                  <span className="plain-metric">-</span>
+                )}
               </td>
             ))}
           </tr>
@@ -197,14 +246,18 @@ export function ForecastTable({ hourly }) {
             <th className="row-label">Böen [kn]</th>
             {columns.map((column) => (
               <td key={`${column.time}-gusts`}>
-                <span
-                  className="metric-badge"
-                  style={{
-                    backgroundColor: getWindSpeedColor(column.windGust),
-                  }}
-                >
-                  {formatMetric(column.windGust, "", 0)}
-                </span>
+                {hasMetricValue(column.windGust) ? (
+                  <span
+                    className="metric-badge"
+                    style={{
+                      backgroundColor: getWindSpeedColor(column.windGust),
+                    }}
+                  >
+                    {formatMetric(column.windGust, "", 0)}
+                  </span>
+                ) : (
+                  <span className="plain-metric">-</span>
+                )}
               </td>
             ))}
           </tr>
@@ -212,14 +265,18 @@ export function ForecastTable({ hourly }) {
             <th className="row-label">Windrichtung</th>
             {columns.map((column) => (
               <td key={`${column.time}-direction`}>
-                <span className="wind-direction-badge">
-                  <span
-                    className="wind-direction-arrow"
-                    style={getWindDirectionArrow(column.windDirection)}
-                  >
-                    ↑
+                {hasMetricValue(column.windDirection) ? (
+                  <span className="wind-direction-badge">
+                    <span
+                      className="wind-direction-arrow"
+                      style={getWindDirectionArrow(column.windDirection)}
+                    >
+                      ↑
+                    </span>
                   </span>
-                </span>
+                ) : (
+                  <span className="plain-metric">-</span>
+                )}
               </td>
             ))}
           </tr>
