@@ -9,5 +9,6 @@ export function getSavedLocations() {
 }
 
 export function saveLocations(locations) {
-  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(locations));
+  const persistedLocations = locations.filter((location) => !location.isMock);
+  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(persistedLocations));
 }
