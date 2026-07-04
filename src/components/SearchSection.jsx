@@ -3,7 +3,7 @@ import { searchLocations } from "../services/weatherApi";
 import { useDebouncedValue } from "../hooks/useDebouncedValue";
 import { SearchResults } from "./SearchResults";
 
-export function SearchSection({ onAddLocation, hint }) {
+export function SearchSection({ onAddLocation, onAddPreview, hint }) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -88,6 +88,13 @@ export function SearchSection({ onAddLocation, hint }) {
           onSelect={handleSelect}
         />
       </div>
+      <button
+        className="preview-button"
+        type="button"
+        onClick={onAddPreview}
+      >
+        Weathercode Vorschau
+      </button>
       <p className="hint">{hint}</p>
     </header>
   );
