@@ -1,4 +1,3 @@
-import React from "react";
 import { WEATHER_ICONS } from "../constants";
 import {
   formatDayLabel,
