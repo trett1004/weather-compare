@@ -111,9 +111,7 @@ function hasMetricValue(value) {
 }
 
 function greyClouds(svg) {
-  return svg
-    .replace(/#F3F7FE/gi, "#9FA3AD")
-    .replace(/#E6EFFC/gi, "#8D919B");
+  return svg.replace(/#F3F7FE/gi, "#9FA3AD").replace(/#E6EFFC/gi, "#8D919B");
 }
 
 function isDaytime(time, daily) {
@@ -160,9 +158,13 @@ export function ForecastTable({ hourly, daily }) {
               const weather = WEATHER_ICONS[column.weatherCode];
               const isDay = isDaytime(column.time, daily);
               const icon = weather
-                ? (isDay ? weather.dayIcon : weather.nightIcon)
+                ? isDay
+                  ? weather.dayIcon
+                  : weather.nightIcon
                 : "❓";
-              const description = weather ? weather.description : "unknown weather";
+              const description = weather
+                ? weather.description
+                : "unknown weather";
               return (
                 <td key={`${column.time}-weather`}>
                   <span
@@ -170,7 +172,8 @@ export function ForecastTable({ hourly, daily }) {
                     title={description}
                     aria-label={description}
                   >
-                    {typeof icon === "string" && icon.trimStart().startsWith("<svg") ? (
+                    {typeof icon === "string" &&
+                    icon.trimStart().startsWith("<svg") ? (
                       <span
                         className="weather-icon-image"
                         dangerouslySetInnerHTML={{ __html: greyClouds(icon) }}
@@ -206,7 +209,8 @@ export function ForecastTable({ hourly, daily }) {
             <th className="row-label">Regen [mm]</th>
             {columns.map((column) => (
               <td key={`${column.time}-rain`}>
-                {hasMetricValue(column.precipitation) && column.precipitation > 0 ? (
+                {hasMetricValue(column.precipitation) &&
+                column.precipitation > 0 ? (
                   <span
                     className="metric-badge"
                     style={{
