@@ -5,6 +5,7 @@ import {
   formatHourLabel,
   getWindDirectionArrow,
 } from "../utils/formatters";
+import { formatDayNumber } from "../utils/formatters";
 
 function sampleForecastColumns(hourly) {
   return hourly.time
@@ -129,26 +130,35 @@ function isDaytime(time, daily) {
 export function ForecastTable({ hourly, daily }) {
   const columns = sampleForecastColumns(hourly);
   const dayGroups = groupColumnsByDay(columns);
+  // build a map from dayKey -> parity (0 or 1) to alternate header backgrounds per day
+  const dayParity = dayGroups.reduce((acc, group, idx) => {
+    acc[group.dayKey] = idx % 2;
+    return acc;
+  }, {});
 
   return (
     <div className="forecast-table-wrap">
       <table className="forecast-table">
         <thead>
-          <tr className="row-day-group">
-            <th className="row-label-header"></th>
-            {dayGroups.map((group) => (
-              <th key={group.dayKey} colSpan={group.columns.length}>
-                {group.label}
-              </th>
-            ))}
-          </tr>
           <tr className="row-hours">
             <th className="row-label-header">Stunden</th>
-            {columns.map((column) => (
-              <th key={`${column.time}-hour`}>
-                {formatHourLabel(column.time)}
-              </th>
-            ))}
+            {columns.map((column) => {
+              const dayKey = column.time.slice(0, 10);
+              const parity = dayParity[dayKey] || 0;
+              const dayLabel = formatDayLabel(column.time);
+              const dateLabel = formatDayNumber(column.time);
+              return (
+                <th key={`${column.time}-header`}>
+                  <div className={`header-stack ${parity ? "alt" : ""}`}>
+                    <div className="header-day">{dayLabel}</div>
+                    <div className="header-date">{dateLabel}</div>
+                    <div className="header-hour">
+                      {formatHourLabel(column.time)}
+                    </div>
+                  </div>
+                </th>
+              );
+            })}
           </tr>
         </thead>
         <tbody>

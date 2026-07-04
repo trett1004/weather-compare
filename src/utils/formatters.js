@@ -1,6 +1,5 @@
 export function formatDate(isoDate) {
   const date = new Date(isoDate);
-
   return date.toLocaleDateString("de-DE", {
     weekday: "short",
     day: "2-digit",
@@ -11,14 +10,19 @@ export function formatDate(isoDate) {
 export function formatDayLabel(isoDate) {
   const date = new Date(isoDate);
 
-  return date.toLocaleDateString("de-DE", {
-    weekday: "long",
-    day: "numeric",
-  });
+  // Return two-letter German weekday abbreviation (Mo, Di, Mi, Do, Fr, Sa, So)
+  const days = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
+  return days[date.getDay()];
 }
 
 export function formatHourLabel(isoDate) {
-  return new Date(isoDate).getHours().toString();
+  const h = new Date(isoDate).getHours();
+  return String(h).padStart(2, "0") + "h";
+}
+
+export function formatDayNumber(isoDate) {
+  const date = new Date(isoDate);
+  return `${date.getDate()}.`;
 }
 
 export function getWindDirectionArrow(degrees) {
