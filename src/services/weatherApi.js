@@ -16,7 +16,9 @@ function formatMockTime(date) {
 }
 
 function getMockPrecipitation(weatherCode, hourIndex) {
-  if ([51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82].includes(weatherCode)) {
+  if (
+    [51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82].includes(weatherCode)
+  ) {
     return Number(((hourIndex % 4) * 0.4 + 0.2).toFixed(1));
   }
 

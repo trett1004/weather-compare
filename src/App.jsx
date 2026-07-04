@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { MAX_LOCATIONS } from "./constants";
+import { MAX_LOCATIONS, MOCK_WEATHER_LOCATION } from "./constants";
 import { LocationList } from "./components/LocationList";
 import { SearchSection } from "./components/SearchSection";
 import { getSavedLocations, saveLocations } from "./services/locationStorage";
@@ -50,7 +50,11 @@ export default function App() {
 
   return (
     <>
-      <SearchSection onAddLocation={handleAddLocation} hint={hint} />
+      <SearchSection
+        onAddLocation={handleAddLocation}
+        onAddPreview={() => handleAddLocation(MOCK_WEATHER_LOCATION)}
+        hint={hint}
+      />
       <LocationList
         locations={locations}
         onRemoveLocation={handleRemoveLocation}
