@@ -137,8 +137,8 @@ export function ForecastTable({ hourly, daily }) {
   }, {});
 
   return (
-    <div className="forecast-table-wrap">
-      <table className="forecast-table">
+    <div className="forecast-table-wrap full-bleed">
+      <table className="forecast-table fill">
         <thead>
           <tr className="row-hours">
             <th className="row-label-header">Stunden</th>
