@@ -18,7 +18,11 @@ function sampleForecastColumns(hourly) {
       windGust: hourly.windgusts_10m[index],
       windDirection: hourly.winddirection_10m[index],
     }))
-    .filter((_, index) => index % 3 === 0);
+    // select every 3rd hour but starting at 02:00 (hours: 02,05,08,...,23)
+    .filter((col) => {
+      const hour = new Date(col.time).getHours();
+      return hour % 3 === 2; // 2,5,8,...,23
+    });
 }
 
 function groupColumnsByDay(columns) {
@@ -68,24 +72,23 @@ function getPrecipitationColor(value) {
 }
 
 function getWindSpeedColor(value) {
-  if (value < 5) {
+  if (value < 6) {
     return "#f3f4f7";
   }
 
-  if (value <= 7) {
-    return "#b8e7ff";
-  }
+  // if (value <= 7) {
+  //   return "#b8e7ff";
+  // }
 
   if (value <= 10) {
     return "#43d8df";
   }
-
   if (value <= 13) {
-    return "#68d34f";
+    return "#b8df3f";
   }
 
-  if (value <= 16) {
-    return "#b8df3f";
+  if (value <= 17) {
+    return "#68d34f";
   }
 
   if (value <= 20) {
@@ -112,7 +115,7 @@ function hasMetricValue(value) {
 }
 
 function greyClouds(svg) {
-  return svg.replace(/#F3F7FE/gi, "#9FA3AD").replace(/#E6EFFC/gi, "#8D919B");
+  return svg.replace(/#F3F7FE/gi, "#dadee8").replace(/#E6EFFC/gi, "#b8bdcb");
 }
 
 function isDaytime(time, daily) {

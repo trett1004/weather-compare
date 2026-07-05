@@ -74,7 +74,7 @@ export function LocationCard({ location, onRemove }) {
   }, [location.lat, location.lon]);
 
   return (
-    <section className="location-card">
+    <section className="location-card full-bleed">
       <div className="card-header">
         <h2 className="loc-name">{formatLocationTitle(location)}</h2>
         <button
