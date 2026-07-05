@@ -1,6 +1,6 @@
 :root {
   --bg: #0f1115;
-  --card-bg: #1a1d24;
+  --card-bg: #0f1115;
   --border: #2a2e38;
   --text: #e8e8ea;
   --text-dim: #9a9da6;
@@ -270,6 +270,8 @@ h1 {
   margin-left: calc(50% - 50vw);
   margin-right: calc(50% - 50vw);
   border-radius: 0;
+  border: none; /* remove visible frame */
+  padding: 0; /* remove inner padding so child table can touch edges */
 }
 
 /* Use together: make table fill the card and optionally edge-bleed */
