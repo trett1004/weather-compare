@@ -231,6 +231,16 @@ h1 {
   position: relative;
 }
 
+/* Drag-to-scroll cursor and touch behavior */
+.forecast-table-wrap {
+  cursor: grab;
+  touch-action: pan-y;
+}
+.forecast-table-wrap.dragging {
+  cursor: grabbing;
+  user-select: none;
+}
+
 .forecast-table {
   --forecast-column-width: 20px;
   border-collapse: separate;

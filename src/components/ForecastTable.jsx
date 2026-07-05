@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { WEATHER_ICONS } from "../constants";
 import {
   formatDayLabel,
@@ -130,14 +130,103 @@ function isDaytime(time, daily) {
 export function ForecastTable({ hourly, daily }) {
   const columns = sampleForecastColumns(hourly);
   const dayGroups = groupColumnsByDay(columns);
+  // drag-to-scroll refs/state
+  const wrapRef = useRef(null);
+  const isDownRef = useRef(false);
+  const startXRef = useRef(0);
+  const scrollLeftRef = useRef(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const instanceId = useRef(Math.random().toString(36).slice(2));
+  const programmaticScroll = useRef(false);
   // build a map from dayKey -> parity (0 or 1) to alternate header backgrounds per day
   const dayParity = dayGroups.reduce((acc, group, idx) => {
     acc[group.dayKey] = idx % 2;
     return acc;
   }, {});
 
+  function handleMouseDown(e) {
+    const wrap = wrapRef.current;
+    if (!wrap) return;
+    isDownRef.current = true;
+    setIsDragging(true);
+    startXRef.current = e.pageX - wrap.offsetLeft;
+    scrollLeftRef.current = wrap.scrollLeft;
+  }
+
+  function handleMouseMove(e) {
+    const wrap = wrapRef.current;
+    if (!wrap || !isDownRef.current) return;
+    e.preventDefault();
+    const x = e.pageX - wrap.offsetLeft;
+    const walk = x - startXRef.current;
+    wrap.scrollLeft = scrollLeftRef.current - walk;
+  }
+
+  function handleMouseUp() {
+    isDownRef.current = false;
+    setIsDragging(false);
+  }
+
+  function handleScroll() {
+    const wrap = wrapRef.current;
+    if (!wrap) return;
+    // if this scroll was caused programmatically during sync, ignore broadcasting
+    if (programmaticScroll.current) {
+      programmaticScroll.current = false;
+      return;
+    }
+    window.dispatchEvent(
+      new CustomEvent("forecast-scroll", {
+        detail: { id: instanceId.current, left: wrap.scrollLeft },
+      }),
+    );
+  }
+
+  function handleTouchStart(e) {
+    const wrap = wrapRef.current;
+    if (!wrap) return;
+    isDownRef.current = true;
+    setIsDragging(true);
+    startXRef.current = e.touches[0].pageX - wrap.offsetLeft;
+    scrollLeftRef.current = wrap.scrollLeft;
+  }
+
+  function handleTouchMove(e) {
+    const wrap = wrapRef.current;
+    if (!wrap || !isDownRef.current) return;
+    const x = e.touches[0].pageX - wrap.offsetLeft;
+    const walk = x - startXRef.current;
+    wrap.scrollLeft = scrollLeftRef.current - walk;
+  }
+
+  useEffect(() => {
+    function onBroadcast(e) {
+      const wrap = wrapRef.current;
+      if (!wrap) return;
+      const { id, left } = e.detail || {};
+      if (id === instanceId.current) return;
+      // apply scroll programmatically and mark so we don't rebroadcast
+      programmaticScroll.current = true;
+      wrap.scrollLeft = left;
+    }
+
+    window.addEventListener("forecast-scroll", onBroadcast);
+    return () => window.removeEventListener("forecast-scroll", onBroadcast);
+  }, []);
+
   return (
-    <div className="forecast-table-wrap full-bleed">
+    <div
+      ref={wrapRef}
+      className={`forecast-table-wrap full-bleed ${isDragging ? "dragging" : ""}`}
+      onMouseDown={handleMouseDown}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
+      onMouseLeave={handleMouseUp}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleMouseUp}
+      onScroll={handleScroll}
+    >
       <table className="forecast-table fill">
         <thead>
           <tr className="row-hours">
