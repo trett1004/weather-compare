@@ -8,21 +8,23 @@ import {
 import { formatDayNumber } from "../utils/formatters";
 
 function sampleForecastColumns(hourly) {
-  return hourly.time
-    .map((time, index) => ({
-      time,
-      weatherCode: hourly.weathercode[index],
-      temperature: hourly.temperature_2m[index],
-      precipitation: hourly.precipitation[index],
-      windSpeed: hourly.windspeed_10m[index],
-      windGust: hourly.windgusts_10m[index],
-      windDirection: hourly.winddirection_10m[index],
-    }))
-    // select every 3rd hour but starting at 02:00 (hours: 02,05,08,...,23)
-    .filter((col) => {
-      const hour = new Date(col.time).getHours();
-      return hour % 3 === 2; // 2,5,8,...,23
-    });
+  return (
+    hourly.time
+      .map((time, index) => ({
+        time,
+        weatherCode: hourly.weathercode[index],
+        temperature: hourly.temperature_2m[index],
+        precipitation: hourly.precipitation[index],
+        windSpeed: hourly.windspeed_10m[index],
+        windGust: hourly.windgusts_10m[index],
+        windDirection: hourly.winddirection_10m[index],
+      }))
+      // select every 3rd hour but starting at 02:00 (hours: 02,05,08,...,23)
+      .filter((col) => {
+        const hour = new Date(col.time).getHours();
+        return hour % 3 === 2; // 2,5,8,...,23
+      })
+  );
 }
 
 function groupColumnsByDay(columns) {
@@ -316,9 +318,8 @@ export function ForecastTable({ hourly, daily }) {
                   <span
                     className="metric-badge"
                     style={{
-                      backgroundColor: getPrecipitationColor(
-                        column.precipitation,
-                      ),
+                      color: getPrecipitationColor(column.precipitation),
+                      background: "transparent",
                     }}
                   >
                     {formatMetric(column.precipitation, "", 1)}
