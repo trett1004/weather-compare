@@ -113,7 +113,7 @@ export async function fetchForecast(lat, lon) {
     daily: "sunrise,sunset",
     wind_speed_unit: "kn",
     timezone: "auto",
-    forecast_days: "5",
+    forecast_days: "7",
   });
 
   const response = await fetch(`${FORECAST_URL}?${params.toString()}`);
