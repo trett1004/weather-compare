@@ -171,13 +171,22 @@ export async function fetchForecast(lat, lon) {
     try {
       const gusts = h.windgusts_10m;
       const speeds = h.windspeed_10m;
-      const hasValidGusts = Array.isArray(gusts) && gusts.some((v) => typeof v === "number" && Number.isFinite(v));
+      const hasValidGusts =
+        Array.isArray(gusts) &&
+        gusts.some((v) => typeof v === "number" && Number.isFinite(v));
       if (!hasValidGusts && Array.isArray(speeds)) {
         // approximate gusts as a factor of wind speed (typical factor between 1.2-1.6)
         const factor = 1.4;
-        h.windgusts_10m = speeds.map((s) => (typeof s === "number" && Number.isFinite(s) ? Number((s * factor).toFixed(1)) : null));
+        h.windgusts_10m = speeds.map((s) =>
+          typeof s === "number" && Number.isFinite(s)
+            ? Number((s * factor).toFixed(1))
+            : null,
+        );
         // eslint-disable-next-line no-console
-        console.debug("synthesized windgusts_10m from windspeed_10m using factor", factor);
+        console.debug(
+          "synthesized windgusts_10m from windspeed_10m using factor",
+          factor,
+        );
       }
     } catch (err) {
       // ignore
