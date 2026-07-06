@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { MAX_LOCATIONS, MOCK_WEATHER_LOCATION } from "./constants";
 import { LocationList } from "./components/LocationList";
 import { SearchSection } from "./components/SearchSection";

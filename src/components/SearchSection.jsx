@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { searchLocations } from "../services/weatherApi";
 import { useDebouncedValue } from "../hooks/useDebouncedValue";
 import { SearchResults } from "./SearchResults";
@@ -12,8 +12,6 @@ export function SearchSection({ onAddLocation, onAddPreview, hint }) {
 
   useEffect(() => {
     if (debouncedQuery.length < 2) {
-      setResults([]);
-      setIsOpen(false);
       return undefined;
     }
 
@@ -27,9 +25,7 @@ export function SearchSection({ onAddLocation, onAddPreview, hint }) {
           setResults(nextResults);
           setIsOpen(nextResults.length > 0);
         }
-      } catch (error) {
-        console.error(error);
-
+      } catch {
         if (!isCancelled) {
           setResults([]);
           setIsOpen(false);
@@ -65,6 +61,9 @@ export function SearchSection({ onAddLocation, onAddPreview, hint }) {
     setIsOpen(false);
   }
 
+  const activeResults = debouncedQuery.length >= 2 ? results : [];
+  const isDropdownOpen = debouncedQuery.length >= 2 && isOpen;
+
   return (
     <header className="page-header">
       <h1>Weather Forecast Europe</h1>
@@ -83,16 +82,12 @@ export function SearchSection({ onAddLocation, onAddPreview, hint }) {
           }}
         />
         <SearchResults
-          results={results}
-          isVisible={isOpen}
+          results={activeResults}
+          isVisible={isDropdownOpen}
           onSelect={handleSelect}
         />
       </div>
-      <button
-        className="preview-button"
-        type="button"
-        onClick={onAddPreview}
-      >
+      <button className="preview-button" type="button" onClick={onAddPreview}>
         Weathercode Vorschau
       </button>
       <p className="hint">{hint}</p>

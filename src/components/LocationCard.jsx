@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { WEATHER_ICONS } from "../constants";
 import { fetchForecast } from "../services/weatherApi";
 import { formatLocationTitle } from "../utils/formatters";
@@ -57,9 +57,7 @@ export function LocationCard({ location, onRemove }) {
         if (!isCancelled) {
           setForecastState({ status: "ready", data });
         }
-      } catch (error) {
-        console.error(error);
-
+      } catch {
         if (!isCancelled) {
           setForecastState({ status: "error", data: null });
         }

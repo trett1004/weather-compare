@@ -1,4 +1,3 @@
-import React from "react";
 import { LocationCard } from "./LocationCard";
 
 export function LocationList({ locations, onRemoveLocation }) {

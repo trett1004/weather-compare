@@ -1,4 +1,3 @@
-import React from "react";
 import { formatLocationLabel } from "../utils/formatters";
 
 export function SearchResults({ results, isVisible, onSelect }) {
