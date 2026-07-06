@@ -6,8 +6,8 @@ import {
 
 describe("formatHourLabel", () => {
   it("returns the hour as a string", () => {
-    expect(formatHourLabel("2024-01-15T14:00")).toBe("14");
-    expect(formatHourLabel("2024-01-15T00:00")).toBe("0");
+    expect(formatHourLabel("2024-01-15T14:00")).toBe("14h");
+    expect(formatHourLabel("2024-01-15T00:00")).toBe("00h");
   });
 });
 

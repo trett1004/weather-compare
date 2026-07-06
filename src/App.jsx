@@ -59,6 +59,10 @@ export default function App() {
         locations={locations}
         onRemoveLocation={handleRemoveLocation}
       />
+      <footer className="site-footer">
+        <a href="/impressum">Impressum</a>
+        <a href="/datenschutz">Datenschutz</a>
+      </footer>
     </>
   );
 }
