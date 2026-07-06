@@ -10,6 +10,14 @@ const distDir = path.join(__dirname, "dist");
 
 app.use(express.static(distDir));
 
+app.get("/impressum", (_request, response) => {
+  response.sendFile(path.join(distDir, "impressum.html"));
+});
+
+app.get("/datenschutz", (_request, response) => {
+  response.sendFile(path.join(distDir, "datenschutz.html"));
+});
+
 app.get("*", (_request, response) => {
   response.sendFile(path.join(distDir, "index.html"));
 });
