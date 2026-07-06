@@ -43,6 +43,10 @@ import thunderstormsExtremeNightHailIcon from "@meteocons/svg-static/fill/thunde
 
 export const GEOCODE_URL = "https://geocoding-api.open-meteo.com/v1/search";
 export const FORECAST_URL = "https://api.open-meteo.com/v1/forecast";
+// Default model to request from Open-Meteo. Change to another supported model
+// (e.g. "gfs", "icon") if desired. Use the documented ECMWF identifier
+// `ecmwf_ifs` to request ECMWF IFS data (see Open-Meteo ECMWF docs).
+export const DEFAULT_WEATHER_MODEL = "ecmwf_ifs";
 export const MAX_LOCATIONS = 10;
 export const STORAGE_KEY = "savedLocations";
 export const MOCK_WEATHER_LOCATION = {
