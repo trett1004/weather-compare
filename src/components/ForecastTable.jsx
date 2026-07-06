@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { WEATHER_ICONS } from "../constants";
 import {
   formatDayLabel,
@@ -8,17 +8,23 @@ import {
 import { formatDayNumber } from "../utils/formatters";
 
 function sampleForecastColumns(hourly) {
-  return hourly.time
-    .map((time, index) => ({
-      time,
-      weatherCode: hourly.weathercode[index],
-      temperature: hourly.temperature_2m[index],
-      precipitation: hourly.precipitation[index],
-      windSpeed: hourly.windspeed_10m[index],
-      windGust: hourly.windgusts_10m[index],
-      windDirection: hourly.winddirection_10m[index],
-    }))
-    .filter((_, index) => index % 3 === 0);
+  return (
+    hourly.time
+      .map((time, index) => ({
+        time,
+        weatherCode: hourly.weathercode[index],
+        temperature: hourly.temperature_2m[index],
+        precipitation: hourly.precipitation[index],
+        windSpeed: hourly.windspeed_10m[index],
+        windGust: hourly.windgusts_10m[index],
+        windDirection: hourly.winddirection_10m[index],
+      }))
+      // select every 3rd hour but starting at 02:00 (hours: 02,05,08,...,23)
+      .filter((col) => {
+        const hour = new Date(col.time).getHours();
+        return hour % 3 === 2; // 2,5,8,...,23
+      })
+  );
 }
 
 function groupColumnsByDay(columns) {
@@ -68,24 +74,23 @@ function getPrecipitationColor(value) {
 }
 
 function getWindSpeedColor(value) {
-  if (value < 5) {
+  if (value < 6) {
     return "#f3f4f7";
   }
 
-  if (value <= 7) {
-    return "#b8e7ff";
-  }
+  // if (value <= 7) {
+  //   return "#b8e7ff";
+  // }
 
   if (value <= 10) {
     return "#43d8df";
   }
-
   if (value <= 13) {
-    return "#68d34f";
+    return "#b8df3f";
   }
 
-  if (value <= 16) {
-    return "#b8df3f";
+  if (value <= 17) {
+    return "#68d34f";
   }
 
   if (value <= 20) {
@@ -112,7 +117,7 @@ function hasMetricValue(value) {
 }
 
 function greyClouds(svg) {
-  return svg.replace(/#F3F7FE/gi, "#9FA3AD").replace(/#E6EFFC/gi, "#8D919B");
+  return svg.replace(/#F3F7FE/gi, "#dadee8").replace(/#E6EFFC/gi, "#b8bdcb");
 }
 
 function isDaytime(time, daily) {
@@ -130,15 +135,104 @@ function isDaytime(time, daily) {
 export function ForecastTable({ hourly, daily }) {
   const columns = sampleForecastColumns(hourly);
   const dayGroups = groupColumnsByDay(columns);
+  // drag-to-scroll refs/state
+  const wrapRef = useRef(null);
+  const isDownRef = useRef(false);
+  const startXRef = useRef(0);
+  const scrollLeftRef = useRef(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const instanceId = useRef(Math.random().toString(36).slice(2));
+  const programmaticScroll = useRef(false);
   // build a map from dayKey -> parity (0 or 1) to alternate header backgrounds per day
   const dayParity = dayGroups.reduce((acc, group, idx) => {
     acc[group.dayKey] = idx % 2;
     return acc;
   }, {});
 
+  function handleMouseDown(e) {
+    const wrap = wrapRef.current;
+    if (!wrap) return;
+    isDownRef.current = true;
+    setIsDragging(true);
+    startXRef.current = e.pageX - wrap.offsetLeft;
+    scrollLeftRef.current = wrap.scrollLeft;
+  }
+
+  function handleMouseMove(e) {
+    const wrap = wrapRef.current;
+    if (!wrap || !isDownRef.current) return;
+    e.preventDefault();
+    const x = e.pageX - wrap.offsetLeft;
+    const walk = x - startXRef.current;
+    wrap.scrollLeft = scrollLeftRef.current - walk;
+  }
+
+  function handleMouseUp() {
+    isDownRef.current = false;
+    setIsDragging(false);
+  }
+
+  function handleScroll() {
+    const wrap = wrapRef.current;
+    if (!wrap) return;
+    // if this scroll was caused programmatically during sync, ignore broadcasting
+    if (programmaticScroll.current) {
+      programmaticScroll.current = false;
+      return;
+    }
+    window.dispatchEvent(
+      new CustomEvent("forecast-scroll", {
+        detail: { id: instanceId.current, left: wrap.scrollLeft },
+      }),
+    );
+  }
+
+  function handleTouchStart(e) {
+    const wrap = wrapRef.current;
+    if (!wrap) return;
+    isDownRef.current = true;
+    setIsDragging(true);
+    startXRef.current = e.touches[0].pageX - wrap.offsetLeft;
+    scrollLeftRef.current = wrap.scrollLeft;
+  }
+
+  function handleTouchMove(e) {
+    const wrap = wrapRef.current;
+    if (!wrap || !isDownRef.current) return;
+    const x = e.touches[0].pageX - wrap.offsetLeft;
+    const walk = x - startXRef.current;
+    wrap.scrollLeft = scrollLeftRef.current - walk;
+  }
+
+  useEffect(() => {
+    function onBroadcast(e) {
+      const wrap = wrapRef.current;
+      if (!wrap) return;
+      const { id, left } = e.detail || {};
+      if (id === instanceId.current) return;
+      // apply scroll programmatically and mark so we don't rebroadcast
+      programmaticScroll.current = true;
+      wrap.scrollLeft = left;
+    }
+
+    window.addEventListener("forecast-scroll", onBroadcast);
+    return () => window.removeEventListener("forecast-scroll", onBroadcast);
+  }, []);
+
   return (
-    <div className="forecast-table-wrap">
-      <table className="forecast-table">
+    <div
+      ref={wrapRef}
+      className={`forecast-table-wrap full-bleed ${isDragging ? "dragging" : ""}`}
+      onMouseDown={handleMouseDown}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
+      onMouseLeave={handleMouseUp}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleMouseUp}
+      onScroll={handleScroll}
+    >
+      <table className="forecast-table fill">
         <thead>
           <tr className="row-hours">
             <th className="row-label-header">Stunden</th>
@@ -224,9 +318,8 @@ export function ForecastTable({ hourly, daily }) {
                   <span
                     className="metric-badge"
                     style={{
-                      backgroundColor: getPrecipitationColor(
-                        column.precipitation,
-                      ),
+                      color: getPrecipitationColor(column.precipitation),
+                      background: "transparent",
                     }}
                   >
                     {formatMetric(column.precipitation, "", 1)}

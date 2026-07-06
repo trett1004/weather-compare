@@ -1,6 +1,6 @@
 :root {
   --bg: #0f1115;
-  --card-bg: #1a1d24;
+  --card-bg: #0f1115;
   --border: #2a2e38;
   --text: #e8e8ea;
   --text-dim: #9a9da6;
@@ -226,11 +226,81 @@ h1 {
   background: linear-gradient(180deg, #131821 0%, #10141c 100%);
 }
 
+/* ensure the scroll container is positioned so sticky cells reference it correctly */
+.forecast-table-wrap {
+  position: relative;
+}
+
+/* Drag-to-scroll cursor and touch behavior */
+.forecast-table-wrap {
+  cursor: grab;
+  touch-action: pan-y;
+}
+.forecast-table-wrap.dragging {
+  cursor: grabbing;
+  user-select: none;
+}
+
 .forecast-table {
   --forecast-column-width: 20px;
   border-collapse: separate;
   border-spacing: 0;
   width: max-content;
+}
+
+/* Utility: make table fill available width and use fixed layout so columns distribute */
+.forecast-table.fill {
+  /* let the table size to its columns (sum of column widths) so
+     individual column widths (var(--forecast-column-width)) are preserved
+     while the wrapper handles horizontal scrolling */
+  width: auto;
+  table-layout: fixed;
+}
+
+/* Utilities to let a card or table expand to its container edges or full viewport */
+.location-card.edge-bleed {
+  width: calc(100% + 32px);
+  margin-left: -16px;
+  margin-right: -16px;
+  border-radius: 12px; /* keep corners when bleeding inside card */
+}
+
+.location-card.full-bleed {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  border-radius: 0;
+  border: none; /* remove visible frame */
+  padding: 0; /* remove inner padding so child table can touch edges */
+}
+
+/* Use together: make table fill the card and optionally edge-bleed */
+.forecast-table.fill + .forecast-table-wrap.edge-bleed,
+.forecast-table.fill + .forecast-table-wrap.full-bleed {
+  width: 100%;
+}
+
+/* Edge-bleed: extend the table-wrap to the edges of the parent card (assumes parent padding 16px) */
+.forecast-table-wrap.edge-bleed {
+  width: calc(100% + 32px);
+  margin-left: -16px;
+  margin-right: -16px;
+  border-radius: 12px; /* keep card corners visually consistent */
+}
+
+/* Full-bleed: span the full viewport width */
+.forecast-table-wrap.full-bleed {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  border-radius: 0;
+}
+
+/* Prevent header content from forcing column growth when using fixed layout */
+.forecast-table .header-stack > * {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .forecast-table th,
@@ -252,7 +322,7 @@ h1 {
   right: 0;
   bottom: 0;
   height: 1px;
-  background: rgba(255,255,255,0.9);
+  background: rgba(255, 255, 255, 0.9);
   transform: scaleY(0.5);
   transform-origin: bottom;
   pointer-events: none;
@@ -265,7 +335,7 @@ h1 {
   bottom: 0;
   left: 0;
   width: 1px;
-  background: rgba(255,255,255,0.9);
+  background: rgba(255, 255, 255, 0.9);
   transform: scaleX(0.5);
   transform-origin: left;
   pointer-events: none;
@@ -327,14 +397,32 @@ h1 {
   position: sticky;
   left: 0;
   z-index: 1;
-  min-width: 110px;
-  padding-left: 12px;
-  padding-right: 12px;
+  min-width: 30px;
+  padding-left: 0px;
+  padding-right: 0px;
   text-align: left;
 }
 
 .row-label-header {
   z-index: 3;
+  background: #f0f2f6;
+}
+
+/* stronger, more specific sticky rules so the first column stays visible on horizontal scroll */
+.forecast-table th.row-label-header,
+.forecast-table th.row-label,
+.forecast-table tbody th.row-label {
+  position: sticky;
+  left: 0;
+  z-index: 6; /* above other cells */
+  background: #ffffff; /* ensure it covers scrolling content underneath */
+  box-shadow: 1px 0 0 rgba(255, 255, 255, 0.06);
+}
+
+/* More specific selector to override thead default background */
+.forecast-table thead th.row-label-header {
+  background: #ffffff;
+  color: #303445;
 }
 
 .row-label {
@@ -342,6 +430,19 @@ h1 {
   color: var(--text-dim);
   font-size: 12px;
   font-weight: 600;
+}
+
+/* Force a smaller sticky first column when using fixed table layout */
+.forecast-table.fill th.row-label-header,
+.forecast-table.fill th.row-label,
+.forecast-table.fill tbody th.row-label {
+  width: 48px;
+  min-width: 48px;
+  padding-left: 8px;
+  padding-right: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .row-icon td,
@@ -419,7 +520,7 @@ h1 {
   width: 24px;
   height: 24px;
   border-radius: 999px;
-  background: rgba(77, 163, 255, 0.14);
+  /* background: rgba(77, 163, 255, 0.14); */
   color: #4c5568;
 }
 
@@ -454,7 +555,7 @@ h1 {
 
   .row-label-header,
   .row-label {
-    min-width: 92px;
+    min-width: 30px;
   }
 
   .forecast-table {
@@ -464,5 +565,40 @@ h1 {
   .metric-badge {
     padding: 6px 2px;
     font-size: 12px;
+  }
+}
+
+/* Responsive: expand card and table on wide screens */
+@media (min-width: 1100px) {
+  /* let the main container use full available width */
+  .locations-container {
+    max-width: 100%;
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  /* allow location cards to stretch to container edges */
+  .location-card {
+    padding: 16px 24px;
+  }
+
+  /* make the table use fixed layout but size to its content so columns keep their widths */
+  .forecast-table.fill {
+    width: auto;
+    table-layout: fixed;
+  }
+
+  /* optionally remove card padding and let the table bleed to card edges */
+  .forecast-table-wrap.edge-bleed {
+    width: calc(100% + 48px);
+    margin-left: -24px;
+    margin-right: -24px;
+  }
+
+  /* allow header text to ellipsis when using fixed layout */
+  .forecast-table.fill .header-stack > * {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }
