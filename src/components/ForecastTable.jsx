@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useId } from "react";
 import { WEATHER_ICONS } from "../constants";
 import {
   formatDayLabel,
@@ -141,8 +141,8 @@ export function ForecastTable({ hourly, daily }) {
   const startXRef = useRef(0);
   const scrollLeftRef = useRef(0);
   const [isDragging, setIsDragging] = useState(false);
-  const instanceId = useRef(Math.random().toString(36).slice(2));
-  const programmaticScroll = useRef(false);
+  const instanceId = useId();
+  const programmaticScrollRef = useRef(false);
   // build a map from dayKey -> parity (0 or 1) to alternate header backgrounds per day
   const dayParity = dayGroups.reduce((acc, group, idx) => {
     acc[group.dayKey] = idx % 2;
@@ -176,13 +176,13 @@ export function ForecastTable({ hourly, daily }) {
     const wrap = wrapRef.current;
     if (!wrap) return;
     // if this scroll was caused programmatically during sync, ignore broadcasting
-    if (programmaticScroll.current) {
-      programmaticScroll.current = false;
+    if (programmaticScrollRef.current) {
+      programmaticScrollRef.current = false;
       return;
     }
     window.dispatchEvent(
       new CustomEvent("forecast-scroll", {
-        detail: { id: instanceId.current, left: wrap.scrollLeft },
+        detail: { id: instanceId, left: wrap.scrollLeft },
       }),
     );
   }
@@ -209,15 +209,15 @@ export function ForecastTable({ hourly, daily }) {
       const wrap = wrapRef.current;
       if (!wrap) return;
       const { id, left } = e.detail || {};
-      if (id === instanceId.current) return;
+      if (id === instanceId) return;
       // apply scroll programmatically and mark so we don't rebroadcast
-      programmaticScroll.current = true;
+      programmaticScrollRef.current = true;
       wrap.scrollLeft = left;
     }
 
     window.addEventListener("forecast-scroll", onBroadcast);
     return () => window.removeEventListener("forecast-scroll", onBroadcast);
-  }, []);
+  }, [instanceId]);
 
   return (
     <div

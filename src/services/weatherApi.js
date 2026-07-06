@@ -164,7 +164,7 @@ export async function fetchForecast(lat, lon) {
       ].map((k) => [k, Array.isArray(h[k]) ? h[k].slice(0, 3) : h[k]]);
       // eslint-disable-next-line no-console
       console.debug("forecast sample:", summary);
-    } catch (err) {
+    } catch {
       // ignore logging errors
     }
     // If wind gusts are missing or all null, synthesize approximate gusts
@@ -188,7 +188,7 @@ export async function fetchForecast(lat, lon) {
           factor,
         );
       }
-    } catch (err) {
+    } catch {
       // ignore
     }
   }
