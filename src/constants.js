@@ -44,9 +44,18 @@ import thunderstormsExtremeNightHailIcon from "@meteocons/svg-static/fill/thunde
 export const GEOCODE_URL = "https://geocoding-api.open-meteo.com/v1/search";
 export const FORECAST_URL = "https://api.open-meteo.com/v1/forecast";
 export const WEATHER_MODELS = {
-  icon_eu: { label: "ICON-EU (5 Tage)", forecastDays: 5 },
-  icon_d2: { label: "ICON-D2 (2 Tage)", forecastDays: 2 },
-  icon_global: { label: "ICON Global (7 Tage)", forecastDays: 7 },
+  icon_d2: {
+    label: "ICON-D2 — Höchste Präzision, 2 Tage (Deutschland + Nachbarn)",
+    forecastDays: 2,
+  },
+  icon_eu: {
+    label: "ICON-EU — Gute Präzision, 5 Tage (Europa)",
+    forecastDays: 5,
+  },
+  icon_global: {
+    label: "ICON Global — Moderate Präzision, 7 Tage (Weltweit)",
+    forecastDays: 7,
+  },
 };
 export const DEFAULT_WEATHER_MODEL = "icon_eu";
 export const MAX_LOCATIONS = 10;
