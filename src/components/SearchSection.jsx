@@ -2,8 +2,15 @@ import { useEffect, useRef, useState } from "react";
 import { searchLocations } from "../services/weatherApi";
 import { useDebouncedValue } from "../hooks/useDebouncedValue";
 import { SearchResults } from "./SearchResults";
+import { WEATHER_MODELS } from "../constants";
 
-export function SearchSection({ onAddLocation, onAddPreview, hint }) {
+export function SearchSection({
+  onAddLocation,
+  onAddPreview,
+  hint,
+  weatherModel,
+  onModelChange,
+}) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -87,6 +94,18 @@ export function SearchSection({ onAddLocation, onAddPreview, hint }) {
           onSelect={handleSelect}
         />
       </div>
+      <select
+        className="model-select"
+        value={weatherModel}
+        onChange={(event) => onModelChange(event.target.value)}
+        aria-label="Wettermodell auswählen"
+      >
+        {Object.entries(WEATHER_MODELS).map(([id, { label }]) => (
+          <option key={id} value={id}>
+            {label}
+          </option>
+        ))}
+      </select>
       <button className="preview-button" type="button" onClick={onAddPreview}>
         Weathercode Vorschau
       </button>

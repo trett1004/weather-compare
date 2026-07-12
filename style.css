@@ -113,6 +113,20 @@ h1 {
   border-color: var(--accent);
 }
 
+.model-select {
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--card-bg);
+  color: var(--text);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.model-select:hover {
+  border-color: var(--accent);
+}
+
 .hint {
   color: var(--danger);
   font-size: 13px;

@@ -39,7 +39,7 @@ function WeatherIconGallery() {
   );
 }
 
-export function LocationCard({ location, onRemove }) {
+export function LocationCard({ location, onRemove, weatherModel }) {
   const [forecastState, setForecastState] = useState({
     status: "loading",
     data: null,
@@ -52,7 +52,11 @@ export function LocationCard({ location, onRemove }) {
       setForecastState({ status: "loading", data: null });
 
       try {
-        const data = await fetchForecast(location.lat, location.lon);
+        const data = await fetchForecast(
+          location.lat,
+          location.lon,
+          weatherModel,
+        );
 
         if (!isCancelled) {
           setForecastState({ status: "ready", data });
@@ -69,7 +73,7 @@ export function LocationCard({ location, onRemove }) {
     return () => {
       isCancelled = true;
     };
-  }, [location.lat, location.lon]);
+  }, [location.lat, location.lon, weatherModel]);
 
   return (
     <section className="location-card full-bleed">

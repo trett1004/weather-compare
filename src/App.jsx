@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
-import { MAX_LOCATIONS, MOCK_WEATHER_LOCATION } from "./constants";
+import {
+  DEFAULT_WEATHER_MODEL,
+  MAX_LOCATIONS,
+  MOCK_WEATHER_LOCATION,
+} from "./constants";
 import { LocationList } from "./components/LocationList";
 import { SearchSection } from "./components/SearchSection";
 import { getSavedLocations, saveLocations } from "./services/locationStorage";
@@ -7,6 +11,7 @@ import { getSavedLocations, saveLocations } from "./services/locationStorage";
 export default function App() {
   const [locations, setLocations] = useState(() => getSavedLocations());
   const [hint, setHint] = useState("");
+  const [weatherModel, setWeatherModel] = useState(DEFAULT_WEATHER_MODEL);
 
   useEffect(() => {
     saveLocations(locations);
@@ -54,10 +59,13 @@ export default function App() {
         onAddLocation={handleAddLocation}
         onAddPreview={() => handleAddLocation(MOCK_WEATHER_LOCATION)}
         hint={hint}
+        weatherModel={weatherModel}
+        onModelChange={setWeatherModel}
       />
       <LocationList
         locations={locations}
         onRemoveLocation={handleRemoveLocation}
+        weatherModel={weatherModel}
       />
       <footer className="site-footer">
         <a href="/impressum">Impressum</a>
