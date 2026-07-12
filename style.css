@@ -482,7 +482,17 @@ h1 {
 }
 
 .row-gusts td {
-  font-size: px;
+  font-size: 11px;
+}
+
+.row-gusts .metric-badge {
+  padding: 3px 4px;
+  font-size: 10px;
+}
+
+.row-gusts .plain-metric {
+  min-height: 14px;
+  font-size: 9px;
 }
 
 .weather-icon {
