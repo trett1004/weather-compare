@@ -39,7 +39,13 @@ function WeatherIconGallery() {
   );
 }
 
-export function LocationCard({ location, onRemove, weatherModel }) {
+export function LocationCard({
+  location,
+  onRemove,
+  weatherModel,
+  windUnit,
+  onWindUnitToggle,
+}) {
   const [forecastState, setForecastState] = useState({
     status: "loading",
     data: null,
@@ -106,6 +112,8 @@ export function LocationCard({ location, onRemove, weatherModel }) {
             <ForecastTable
               hourly={forecastState.data.hourly}
               daily={forecastState.data.daily}
+              windUnit={windUnit}
+              onWindUnitToggle={onWindUnitToggle}
             />
           </>
         )}

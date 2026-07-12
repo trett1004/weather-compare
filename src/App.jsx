@@ -12,6 +12,15 @@ export default function App() {
   const [locations, setLocations] = useState(() => getSavedLocations());
   const [hint, setHint] = useState("");
   const [weatherModel, setWeatherModel] = useState(DEFAULT_WEATHER_MODEL);
+  const [windUnit, setWindUnit] = useState(
+    () => localStorage.getItem("windUnit") || "ms",
+  );
+
+  function handleWindUnitToggle() {
+    const next = windUnit === "ms" ? "kn" : "ms";
+    setWindUnit(next);
+    localStorage.setItem("windUnit", next);
+  }
 
   useEffect(() => {
     saveLocations(locations);
@@ -65,6 +74,8 @@ export default function App() {
         locations={locations}
         onRemoveLocation={handleRemoveLocation}
         weatherModel={weatherModel}
+        windUnit={windUnit}
+        onWindUnitToggle={handleWindUnitToggle}
       />
       <footer className="site-footer">
         <a href="/impressum">Impressum</a>

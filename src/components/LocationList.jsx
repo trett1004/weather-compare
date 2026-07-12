@@ -1,6 +1,12 @@
 import { LocationCard } from "./LocationCard";
 
-export function LocationList({ locations, onRemoveLocation, weatherModel }) {
+export function LocationList({
+  locations,
+  onRemoveLocation,
+  weatherModel,
+  windUnit,
+  onWindUnitToggle,
+}) {
   if (locations.length === 0) {
     return (
       <main className="locations-container empty-state">
@@ -17,6 +23,8 @@ export function LocationList({ locations, onRemoveLocation, weatherModel }) {
           location={location}
           onRemove={onRemoveLocation}
           weatherModel={weatherModel}
+          windUnit={windUnit}
+          onWindUnitToggle={onWindUnitToggle}
         />
       ))}
     </main>

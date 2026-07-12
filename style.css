@@ -459,6 +459,15 @@ h1 {
   font-weight: 600;
 }
 
+.row-label-toggle {
+  cursor: pointer;
+  user-select: none;
+}
+
+.row-label-toggle:hover {
+  color: var(--accent);
+}
+
 /* Force a smaller sticky first column when using fixed table layout */
 .forecast-table.fill th.row-label-header,
 .forecast-table.fill th.row-label,
