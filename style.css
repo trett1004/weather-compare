@@ -113,6 +113,18 @@ h1 {
   border-color: var(--accent);
 }
 
+.model-select-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.model-select-label {
+  font-size: 14px;
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+
 .model-select {
   padding: 8px 12px;
   border: 1px solid var(--border);

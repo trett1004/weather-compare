@@ -72,7 +72,7 @@ export function SearchSection({
 
   return (
     <header className="page-header">
-      <h1>Weather Forecast Europe</h1>
+      <h1>Compare Weather Forecast Europe</h1>
       <div className="search-wrap" ref={wrapperRef}>
         <input
           id="search-input"
@@ -93,18 +93,23 @@ export function SearchSection({
           onSelect={handleSelect}
         />
       </div>
-      <select
-        className="model-select"
-        value={weatherModel}
-        onChange={(event) => onModelChange(event.target.value)}
-        aria-label="Wettermodell auswählen"
-      >
-        {Object.entries(WEATHER_MODELS).map(([id, { label }]) => (
-          <option key={id} value={id}>
-            {label}
-          </option>
-        ))}
-      </select>
+      <div className="model-select-wrap">
+        <label htmlFor="model-select" className="model-select-label">
+          Wähle ein Wettermodell:
+        </label>
+        <select
+          id="model-select"
+          className="model-select"
+          value={weatherModel}
+          onChange={(event) => onModelChange(event.target.value)}
+        >
+          {Object.entries(WEATHER_MODELS).map(([id, { label }]) => (
+            <option key={id} value={id}>
+              {label}
+            </option>
+          ))}
+        </select>
+      </div>
       <p className="hint">{hint}</p>
     </header>
   );
