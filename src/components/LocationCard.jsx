@@ -77,37 +77,39 @@ export function LocationCard({ location, onRemove, weatherModel }) {
 
   return (
     <section className="location-card full-bleed">
-      <div className="card-header">
-        <h2 className="loc-name">{formatLocationTitle(location)}</h2>
-        <button
-          className="remove-btn"
-          type="button"
-          title="Entfernen"
-          onClick={() => onRemove(location.id)}
-        >
-          ✕
-        </button>
+      <div className="card-content">
+        <div className="card-header">
+          <h2 className="loc-name">{formatLocationTitle(location)}</h2>
+          <button
+            className="remove-btn"
+            type="button"
+            title="Entfernen"
+            onClick={() => onRemove(location.id)}
+          >
+            ✕
+          </button>
+        </div>
+
+        {forecastState.status === "loading" && (
+          <p className="status-message">Lade Wetterdaten...</p>
+        )}
+
+        {forecastState.status === "error" && (
+          <p className="status-message error-message">
+            Wetterdaten konnten nicht geladen werden.
+          </p>
+        )}
+
+        {forecastState.status === "ready" && (
+          <>
+            {location.isMock && <WeatherIconGallery />}
+            <ForecastTable
+              hourly={forecastState.data.hourly}
+              daily={forecastState.data.daily}
+            />
+          </>
+        )}
       </div>
-
-      {forecastState.status === "loading" && (
-        <p className="status-message">Lade Wetterdaten...</p>
-      )}
-
-      {forecastState.status === "error" && (
-        <p className="status-message error-message">
-          Wetterdaten konnten nicht geladen werden.
-        </p>
-      )}
-
-      {forecastState.status === "ready" && (
-        <>
-          {location.isMock && <WeatherIconGallery />}
-          <ForecastTable
-            hourly={forecastState.data.hourly}
-            daily={forecastState.data.daily}
-          />
-        </>
-      )}
     </section>
   );
 }

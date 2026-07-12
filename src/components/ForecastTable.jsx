@@ -222,7 +222,7 @@ export function ForecastTable({ hourly, daily }) {
   return (
     <div
       ref={wrapRef}
-      className={`forecast-table-wrap full-bleed ${isDragging ? "dragging" : ""}`}
+      className={`forecast-table-wrap ${isDragging ? "dragging" : ""}`}
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
