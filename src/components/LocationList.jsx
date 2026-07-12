@@ -1,10 +1,16 @@
 import { LocationCard } from "./LocationCard";
 
-export function LocationList({ locations, onRemoveLocation }) {
+export function LocationList({
+  locations,
+  onRemoveLocation,
+  weatherModel,
+  windUnit,
+  onWindUnitToggle,
+}) {
   if (locations.length === 0) {
     return (
       <main className="locations-container empty-state">
-        <p>Suche nach einem Ort, um den 10-Tage-Forecast zu vergleichen.</p>
+        <p>Suche nach einem Ort, um den Forecast zu vergleichen.</p>
       </main>
     );
   }
@@ -16,6 +22,9 @@ export function LocationList({ locations, onRemoveLocation }) {
           key={location.id}
           location={location}
           onRemove={onRemoveLocation}
+          weatherModel={weatherModel}
+          windUnit={windUnit}
+          onWindUnitToggle={onWindUnitToggle}
         />
       ))}
     </main>

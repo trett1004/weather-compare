@@ -82,26 +82,26 @@ function getWindSpeedColor(value) {
   //   return "#b8e7ff";
   // }
 
-  if (value <= 10) {
+  if (value <= 8) {
     return "#43d8df";
   }
-  if (value <= 13) {
-    return "#b8df3f";
-  }
+  //if (value <= 13) {
+  //return "#b8df3f";
+  //}
 
-  if (value <= 17) {
+  if (value <= 13) {
     return "#68d34f";
   }
 
-  if (value <= 20) {
+  if (value <= 19) {
     return "#f0d13b";
   }
 
-  if (value <= 24) {
+  if (value <= 25) {
     return "#f4a13a";
   }
 
-  if (value <= 28) {
+  if (value <= 31) {
     return "#eb6648";
   }
 
@@ -132,7 +132,15 @@ function isDaytime(time, daily) {
   return time >= daily.sunrise[dayIndex] && time < daily.sunset[dayIndex];
 }
 
-export function ForecastTable({ hourly, daily }) {
+export function ForecastTable({
+  hourly,
+  daily,
+  windUnit = "ms",
+  onWindUnitToggle,
+}) {
+  const toDisplay = (kn) =>
+    windUnit === "ms" ? (kn * 0.514444).toFixed(0) : kn.toFixed(0);
+  const unitLabel = windUnit === "ms" ? "m/s" : "kn";
   const columns = sampleForecastColumns(hourly);
   const dayGroups = groupColumnsByDay(columns);
   // drag-to-scroll refs/state
@@ -222,7 +230,7 @@ export function ForecastTable({ hourly, daily }) {
   return (
     <div
       ref={wrapRef}
-      className={`forecast-table-wrap full-bleed ${isDragging ? "dragging" : ""}`}
+      className={`forecast-table-wrap ${isDragging ? "dragging" : ""}`}
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
@@ -331,7 +339,13 @@ export function ForecastTable({ hourly, daily }) {
             ))}
           </tr>
           <tr className="row-wind">
-            <th className="row-label">Wind [kn]</th>
+            <th
+              className="row-label row-label-toggle"
+              onClick={onWindUnitToggle}
+              title="Einheit wechseln"
+            >
+              Wind [{unitLabel}]
+            </th>
             {columns.map((column) => (
               <td key={`${column.time}-wind`}>
                 {hasMetricValue(column.windSpeed) ? (
@@ -341,7 +355,7 @@ export function ForecastTable({ hourly, daily }) {
                       backgroundColor: getWindSpeedColor(column.windSpeed),
                     }}
                   >
-                    {formatMetric(column.windSpeed, "", 0)}
+                    {toDisplay(column.windSpeed)}
                   </span>
                 ) : (
                   <span className="plain-metric">-</span>
@@ -350,7 +364,13 @@ export function ForecastTable({ hourly, daily }) {
             ))}
           </tr>
           <tr className="row-gusts">
-            <th className="row-label">Böen [kn]</th>
+            <th
+              className="row-label row-label-toggle"
+              onClick={onWindUnitToggle}
+              title="Einheit wechseln"
+            >
+              Böen [{unitLabel}]
+            </th>
             {columns.map((column) => (
               <td key={`${column.time}-gusts`}>
                 {hasMetricValue(column.windGust) ? (
@@ -360,7 +380,7 @@ export function ForecastTable({ hourly, daily }) {
                       backgroundColor: getWindSpeedColor(column.windGust),
                     }}
                   >
-                    {formatMetric(column.windGust, "", 0)}
+                    {toDisplay(column.windGust)}
                   </span>
                 ) : (
                   <span className="plain-metric">-</span>

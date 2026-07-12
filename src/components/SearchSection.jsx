@@ -2,8 +2,14 @@ import { useEffect, useRef, useState } from "react";
 import { searchLocations } from "../services/weatherApi";
 import { useDebouncedValue } from "../hooks/useDebouncedValue";
 import { SearchResults } from "./SearchResults";
+import { WEATHER_MODELS } from "../constants";
 
-export function SearchSection({ onAddLocation, onAddPreview, hint }) {
+export function SearchSection({
+  onAddLocation,
+  hint,
+  weatherModel,
+  onModelChange,
+}) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -66,7 +72,7 @@ export function SearchSection({ onAddLocation, onAddPreview, hint }) {
 
   return (
     <header className="page-header">
-      <h1>Weather Forecast Europe</h1>
+      <h1>Compare Weather Forecast Europe</h1>
       <div className="search-wrap" ref={wrapperRef}>
         <input
           id="search-input"
@@ -87,9 +93,23 @@ export function SearchSection({ onAddLocation, onAddPreview, hint }) {
           onSelect={handleSelect}
         />
       </div>
-      <button className="preview-button" type="button" onClick={onAddPreview}>
-        Weathercode Vorschau
-      </button>
+      <div className="model-select-wrap">
+        <label htmlFor="model-select" className="model-select-label">
+          Wähle ein Wettermodell:
+        </label>
+        <select
+          id="model-select"
+          className="model-select"
+          value={weatherModel}
+          onChange={(event) => onModelChange(event.target.value)}
+        >
+          {Object.entries(WEATHER_MODELS).map(([id, { label }]) => (
+            <option key={id} value={id}>
+              {label}
+            </option>
+          ))}
+        </select>
+      </div>
       <p className="hint">{hint}</p>
     </header>
   );
