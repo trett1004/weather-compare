@@ -637,12 +637,22 @@ h1 {
   justify-content: center;
 }
 
-.site-footer a {
+.site-footer a,
+.footer-link-btn {
   color: var(--text-dim);
   text-decoration: none;
   font-size: 13px;
 }
 
-.site-footer a:hover {
+.footer-link-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.site-footer a:hover,
+.footer-link-btn:hover {
   color: var(--text);
 }

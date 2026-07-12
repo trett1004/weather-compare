@@ -6,7 +6,6 @@ import { WEATHER_MODELS } from "../constants";
 
 export function SearchSection({
   onAddLocation,
-  onAddPreview,
   hint,
   weatherModel,
   onModelChange,
@@ -106,9 +105,6 @@ export function SearchSection({
           </option>
         ))}
       </select>
-      <button className="preview-button" type="button" onClick={onAddPreview}>
-        Weathercode Vorschau
-      </button>
       <p className="hint">{hint}</p>
     </header>
   );

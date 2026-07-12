@@ -57,7 +57,6 @@ export default function App() {
     <>
       <SearchSection
         onAddLocation={handleAddLocation}
-        onAddPreview={() => handleAddLocation(MOCK_WEATHER_LOCATION)}
         hint={hint}
         weatherModel={weatherModel}
         onModelChange={setWeatherModel}
@@ -70,6 +69,13 @@ export default function App() {
       <footer className="site-footer">
         <a href="/impressum">Impressum</a>
         <a href="/datenschutz">Datenschutz</a>
+        <button
+          className="footer-link-btn"
+          type="button"
+          onClick={() => handleAddLocation(MOCK_WEATHER_LOCATION)}
+        >
+          Explanation icons and colors
+        </button>
       </footer>
     </>
   );
