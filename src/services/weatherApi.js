@@ -4,6 +4,7 @@ import {
   MOCK_WEATHER_LOCATION,
   WEATHER_ICONS,
   DEFAULT_WEATHER_MODEL,
+  WEATHER_MODELS,
 } from "../constants";
 
 const PREVIEW_WEATHER_CODES = Object.keys(WEATHER_ICONS).map(Number);
@@ -101,10 +102,12 @@ export async function searchLocations(query) {
   }));
 }
 
-export async function fetchForecast(lat, lon) {
+export async function fetchForecast(lat, lon, model = DEFAULT_WEATHER_MODEL) {
   if (lat === MOCK_WEATHER_LOCATION.lat && lon === MOCK_WEATHER_LOCATION.lon) {
     return buildMockForecast();
   }
+
+  const forecastDays = WEATHER_MODELS[model]?.forecastDays ?? 5;
 
   const params = new URLSearchParams({
     latitude: lat,
@@ -114,8 +117,8 @@ export async function fetchForecast(lat, lon) {
     daily: "sunrise,sunset",
     wind_speed_unit: "kn",
     timezone: "auto",
-    forecast_days: "7",
-    models: DEFAULT_WEATHER_MODEL,
+    forecast_days: String(forecastDays),
+    models: model,
   });
 
   const response = await fetch(`${FORECAST_URL}?${params.toString()}`);

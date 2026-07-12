@@ -39,7 +39,13 @@ function WeatherIconGallery() {
   );
 }
 
-export function LocationCard({ location, onRemove }) {
+export function LocationCard({
+  location,
+  onRemove,
+  weatherModel,
+  windUnit,
+  onWindUnitToggle,
+}) {
   const [forecastState, setForecastState] = useState({
     status: "loading",
     data: null,
@@ -52,7 +58,11 @@ export function LocationCard({ location, onRemove }) {
       setForecastState({ status: "loading", data: null });
 
       try {
-        const data = await fetchForecast(location.lat, location.lon);
+        const data = await fetchForecast(
+          location.lat,
+          location.lon,
+          weatherModel,
+        );
 
         if (!isCancelled) {
           setForecastState({ status: "ready", data });
@@ -69,41 +79,45 @@ export function LocationCard({ location, onRemove }) {
     return () => {
       isCancelled = true;
     };
-  }, [location.lat, location.lon]);
+  }, [location.lat, location.lon, weatherModel]);
 
   return (
     <section className="location-card full-bleed">
-      <div className="card-header">
-        <h2 className="loc-name">{formatLocationTitle(location)}</h2>
-        <button
-          className="remove-btn"
-          type="button"
-          title="Entfernen"
-          onClick={() => onRemove(location.id)}
-        >
-          ✕
-        </button>
+      <div className="card-content">
+        <div className="card-header">
+          <h2 className="loc-name">{formatLocationTitle(location)}</h2>
+          <button
+            className="remove-btn"
+            type="button"
+            title="Entfernen"
+            onClick={() => onRemove(location.id)}
+          >
+            ✕
+          </button>
+        </div>
+
+        {forecastState.status === "loading" && (
+          <p className="status-message">Lade Wetterdaten...</p>
+        )}
+
+        {forecastState.status === "error" && (
+          <p className="status-message error-message">
+            Wetterdaten konnten nicht geladen werden.
+          </p>
+        )}
+
+        {forecastState.status === "ready" && (
+          <>
+            {location.isMock && <WeatherIconGallery />}
+            <ForecastTable
+              hourly={forecastState.data.hourly}
+              daily={forecastState.data.daily}
+              windUnit={windUnit}
+              onWindUnitToggle={onWindUnitToggle}
+            />
+          </>
+        )}
       </div>
-
-      {forecastState.status === "loading" && (
-        <p className="status-message">Lade Wetterdaten...</p>
-      )}
-
-      {forecastState.status === "error" && (
-        <p className="status-message error-message">
-          Wetterdaten konnten nicht geladen werden.
-        </p>
-      )}
-
-      {forecastState.status === "ready" && (
-        <>
-          {location.isMock && <WeatherIconGallery />}
-          <ForecastTable
-            hourly={forecastState.data.hourly}
-            daily={forecastState.data.daily}
-          />
-        </>
-      )}
     </section>
   );
 }

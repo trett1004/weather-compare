@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
-import { MAX_LOCATIONS, MOCK_WEATHER_LOCATION } from "./constants";
+import {
+  DEFAULT_WEATHER_MODEL,
+  MAX_LOCATIONS,
+  MOCK_WEATHER_LOCATION,
+} from "./constants";
 import { LocationList } from "./components/LocationList";
 import { SearchSection } from "./components/SearchSection";
 import { getSavedLocations, saveLocations } from "./services/locationStorage";
@@ -7,6 +11,16 @@ import { getSavedLocations, saveLocations } from "./services/locationStorage";
 export default function App() {
   const [locations, setLocations] = useState(() => getSavedLocations());
   const [hint, setHint] = useState("");
+  const [weatherModel, setWeatherModel] = useState(DEFAULT_WEATHER_MODEL);
+  const [windUnit, setWindUnit] = useState(
+    () => localStorage.getItem("windUnit") || "ms",
+  );
+
+  function handleWindUnitToggle() {
+    const next = windUnit === "ms" ? "kn" : "ms";
+    setWindUnit(next);
+    localStorage.setItem("windUnit", next);
+  }
 
   useEffect(() => {
     saveLocations(locations);
@@ -52,16 +66,27 @@ export default function App() {
     <>
       <SearchSection
         onAddLocation={handleAddLocation}
-        onAddPreview={() => handleAddLocation(MOCK_WEATHER_LOCATION)}
         hint={hint}
+        weatherModel={weatherModel}
+        onModelChange={setWeatherModel}
       />
       <LocationList
         locations={locations}
         onRemoveLocation={handleRemoveLocation}
+        weatherModel={weatherModel}
+        windUnit={windUnit}
+        onWindUnitToggle={handleWindUnitToggle}
       />
       <footer className="site-footer">
         <a href="/impressum">Impressum</a>
         <a href="/datenschutz">Datenschutz</a>
+        <button
+          className="footer-link-btn"
+          type="button"
+          onClick={() => handleAddLocation(MOCK_WEATHER_LOCATION)}
+        >
+          Explanation icons and colors
+        </button>
       </footer>
     </>
   );
