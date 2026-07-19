@@ -3,6 +3,8 @@ name: CI / Deploy
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
   test:
@@ -26,16 +28,16 @@ jobs:
         run: npm test
 
   deploy:
-    name: Deploy to Hetzner
+    name: Deploy to server
     needs: test
-    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
 
       - name: Install dependencies
         run: npm ci
@@ -43,11 +45,17 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Deploy via SFTP
-        env:
-          SFTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+      - name: Sync files to app directory
         run: |
-          sudo apt-get install -y lftp
-          lftp -u "${{ secrets.FTP_USERNAME }},$SFTP_PASSWORD" \
-            -e "set sftp:auto-confirm yes; mirror -R --delete ./dist/ /public_html/; bye" \
-            sftp://${{ secrets.FTP_SERVER }}
+          rsync -a --delete \
+            --exclude='.git' \
+            --exclude='node_modules' \
+            $GITHUB_WORKSPACE/ $HOME/repositories/weather-compare/
+
+      - name: Install production dependencies
+        run: |
+          cd $HOME/repositories/weather-compare
+          npm ci --omit=dev
+
+      - name: Restart app
+        run: pm2 restart weather-compare --update-env
