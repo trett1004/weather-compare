@@ -174,7 +174,7 @@ export function ForecastTable({
     return acc;
   }, {});
   const columnIsDay = columns.map((col) => isDaytime(col.time, daily));
-  const now = new Date().toISOString().slice(0, 16);
+  const [now] = useState(() => new Date().toISOString().slice(0, 16));
   const currentColIndex = columns.findIndex(
     (col) => col.time.slice(0, 16) >= now,
   );
