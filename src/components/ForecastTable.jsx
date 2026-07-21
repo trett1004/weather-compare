@@ -235,23 +235,6 @@ export function ForecastTable({
     );
   }
 
-  function handleTouchStart(e) {
-    const wrap = wrapRef.current;
-    if (!wrap) return;
-    isDownRef.current = true;
-    setIsDragging(true);
-    startXRef.current = e.touches[0].pageX - wrap.offsetLeft;
-    scrollLeftRef.current = wrap.scrollLeft;
-  }
-
-  function handleTouchMove(e) {
-    const wrap = wrapRef.current;
-    if (!wrap || !isDownRef.current) return;
-    const x = e.touches[0].pageX - wrap.offsetLeft;
-    const walk = x - startXRef.current;
-    wrap.scrollLeft = scrollLeftRef.current - walk;
-  }
-
   useEffect(() => {
     function onBroadcast(e) {
       const wrap = wrapRef.current;
@@ -275,15 +258,15 @@ export function ForecastTable({
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseUp}
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleMouseUp}
       onScroll={handleScroll}
     >
       <table className="forecast-table fill">
         <thead>
           <tr className="row-hours">
-            <th className="row-label-header">Stunden</th>
+            <th className="row-label-header">
+              <span className="label-full">Stunden</span>
+              <span className="label-short">h</span>
+            </th>
             {columns.map((column, i) => {
               const dayKey = column.time.slice(0, 10);
               const parity = dayParity[dayKey] || 0;
@@ -315,7 +298,10 @@ export function ForecastTable({
         </thead>
         <tbody>
           <tr className="row-icon">
-            <th className="row-label">Wetter</th>
+            <th className="row-label">
+              <span className="label-full">Wetter</span>
+              <span className="label-short">☁</span>
+            </th>
             {columns.map((column, i) => {
               const weather = WEATHER_ICONS[column.weatherCode];
               const isDay = isDaytime(column.time, daily);
@@ -352,7 +338,10 @@ export function ForecastTable({
             })}
           </tr>
           <tr className="row-temp">
-            <th className="row-label">Temperatur [°C]</th>
+            <th className="row-label">
+              <span className="label-full">Temperatur [°C]</span>
+              <span className="label-short">°C</span>
+            </th>
             {columns.map((column, i) => (
               <td
                 key={`${column.time}-temp`}
@@ -370,7 +359,10 @@ export function ForecastTable({
             ))}
           </tr>
           <tr className="row-rain">
-            <th className="row-label">Regen [mm]</th>
+            <th className="row-label">
+              <span className="label-full">Regen [mm]</span>
+              <span className="label-short">mm</span>
+            </th>
             {columns.map((column, i) => (
               <td
                 key={`${column.time}-rain`}
@@ -399,7 +391,8 @@ export function ForecastTable({
               onClick={onWindUnitToggle}
               title="Einheit wechseln"
             >
-              Wind [{unitLabel}]
+              <span className="label-full">Wind [{unitLabel}]</span>
+              <span className="label-short">{unitLabel}</span>
             </th>
             {columns.map((column, i) => (
               <td
@@ -423,7 +416,8 @@ export function ForecastTable({
               onClick={onWindUnitToggle}
               title="Einheit wechseln"
             >
-              Böen [{unitLabel}]
+              <span className="label-full">Böen [{unitLabel}]</span>
+              <span className="label-short">{unitLabel}</span>
             </th>
             {columns.map((column, i) => (
               <td
@@ -442,7 +436,10 @@ export function ForecastTable({
             ))}
           </tr>
           <tr className="row-direction">
-            <th className="row-label">Windrichtung</th>
+            <th className="row-label">
+              <span className="label-full">Windrichtung</span>
+              <span className="label-short">→</span>
+            </th>
             {columns.map((column, i) => (
               <td
                 key={`${column.time}-direction`}

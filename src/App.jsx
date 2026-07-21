@@ -62,6 +62,10 @@ export default function App() {
     );
   }
 
+  function handleReorderLocations(newLocations) {
+    setLocations(newLocations);
+  }
+
   return (
     <>
       <SearchSection
@@ -73,6 +77,7 @@ export default function App() {
       <LocationList
         locations={locations}
         onRemoveLocation={handleRemoveLocation}
+        onReorderLocations={handleReorderLocations}
         weatherModel={weatherModel}
         windUnit={windUnit}
         onWindUnitToggle={handleWindUnitToggle}

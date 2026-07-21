@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { WEATHER_ICONS } from "../constants";
 import { fetchForecast } from "../services/weatherApi";
 import { formatLocationTitle } from "../utils/formatters";
@@ -46,6 +48,24 @@ export function LocationCard({
   windUnit,
   onWindUnitToggle,
 }) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: location.id });
+
+  const dragStyle = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.4 : 1,
+    position: "relative",
+    zIndex: isDragging ? 1 : undefined,
+  };
+
+  const [collapsed, setCollapsed] = useState(false);
   const [forecastState, setForecastState] = useState({
     status: "loading",
     data: null,
@@ -82,31 +102,54 @@ export function LocationCard({
   }, [location.lat, location.lon, weatherModel]);
 
   return (
-    <section className="location-card full-bleed">
+    <section
+      ref={setNodeRef}
+      style={dragStyle}
+      className="location-card full-bleed"
+    >
       <div className="card-content">
         <div className="card-header">
-          <h2 className="loc-name">{formatLocationTitle(location)}</h2>
           <button
-            className="remove-btn"
+            className="drag-handle"
             type="button"
-            title="Entfernen"
-            onClick={() => onRemove(location.id)}
+            aria-label="Ziehen zum Sortieren"
+            {...attributes}
+            {...listeners}
           >
-            ✕
+            ⠿
           </button>
+          <h2 className="loc-name">{formatLocationTitle(location)}</h2>
+          <div className="card-actions">
+            <button
+              className="collapse-btn"
+              type="button"
+              title={collapsed ? "Ausklappen" : "Einklappen"}
+              onClick={() => setCollapsed((c) => !c)}
+            >
+              {collapsed ? "▶" : "▼"}
+            </button>
+            <button
+              className="remove-btn"
+              type="button"
+              title="Entfernen"
+              onClick={() => onRemove(location.id)}
+            >
+              ✕
+            </button>
+          </div>
         </div>
 
-        {forecastState.status === "loading" && (
+        {!collapsed && forecastState.status === "loading" && (
           <p className="status-message">Lade Wetterdaten...</p>
         )}
 
-        {forecastState.status === "error" && (
+        {!collapsed && forecastState.status === "error" && (
           <p className="status-message error-message">
             Wetterdaten konnten nicht geladen werden.
           </p>
         )}
 
-        {forecastState.status === "ready" && (
+        {!collapsed && forecastState.status === "ready" && (
           <>
             {location.isMock && <WeatherIconGallery />}
             <ForecastTable
