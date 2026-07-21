@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { WEATHER_ICONS } from "../constants";
 import { fetchForecast } from "../services/weatherApi";
 import { formatLocationTitle } from "../utils/formatters";
@@ -46,6 +48,22 @@ export function LocationCard({
   windUnit,
   onWindUnitToggle,
 }) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: location.id });
+
+  const dragStyle = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.4 : 1,
+    position: "relative",
+    zIndex: isDragging ? 1 : undefined,
+  };
   const [forecastState, setForecastState] = useState({
     status: "loading",
     data: null,
@@ -82,9 +100,22 @@ export function LocationCard({
   }, [location.lat, location.lon, weatherModel]);
 
   return (
-    <section className="location-card full-bleed">
+    <section
+      ref={setNodeRef}
+      style={dragStyle}
+      className="location-card full-bleed"
+    >
       <div className="card-content">
         <div className="card-header">
+          <button
+            className="drag-handle"
+            type="button"
+            aria-label="Ziehen zum Sortieren"
+            {...attributes}
+            {...listeners}
+          >
+            ⠿
+          </button>
           <h2 className="loc-name">{formatLocationTitle(location)}</h2>
           <button
             className="remove-btn"

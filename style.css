@@ -245,6 +245,27 @@ h1 {
   background: #2a1818;
 }
 
+.drag-handle {
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  font-size: 20px;
+  line-height: 1;
+  cursor: grab;
+  padding: 4px 8px;
+  border-radius: 6px;
+  touch-action: none;
+  flex-shrink: 0;
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+}
+
+.drag-handle:hover {
+  color: var(--text);
+}
+
 .forecast-table-wrap {
   overflow-x: auto;
   border: 1px solid var(--border);
