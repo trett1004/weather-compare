@@ -74,7 +74,7 @@ function getPrecipitationColor(value) {
 }
 
 function getWindSpeedColor(value) {
-  if (value < 6) {
+  if (value < 4) {
     return "#f3f4f7";
   }
 
@@ -82,26 +82,26 @@ function getWindSpeedColor(value) {
   //   return "#b8e7ff";
   // }
 
-  if (value <= 8) {
-    return "#43d8df";
+  if (value <= 7) {
+    return "#b8e7ff";
   }
   //if (value <= 13) {
   //return "#b8df3f";
   //}
 
-  if (value <= 13) {
+  if (value <= 9) {
     return "#68d34f";
   }
 
-  if (value <= 19) {
+  if (value <= 13) {
     return "#f0d13b";
   }
 
-  if (value <= 25) {
+  if (value <= 15) {
     return "#f4a13a";
   }
 
-  if (value <= 31) {
+  if (value <= 20) {
     return "#eb6648";
   }
 
@@ -352,7 +352,9 @@ export function ForecastTable({
                   <span
                     className="metric-badge"
                     style={{
-                      backgroundColor: getWindSpeedColor(column.windSpeed),
+                      backgroundColor: getWindSpeedColor(
+                        Math.round(column.windSpeed * 0.514444),
+                      ),
                     }}
                   >
                     {toDisplay(column.windSpeed)}
@@ -377,7 +379,9 @@ export function ForecastTable({
                   <span
                     className="metric-badge"
                     style={{
-                      backgroundColor: getWindSpeedColor(column.windGust),
+                      backgroundColor: getWindSpeedColor(
+                        Math.round(column.windGust * 0.514444),
+                      ),
                     }}
                   >
                     {toDisplay(column.windGust)}
