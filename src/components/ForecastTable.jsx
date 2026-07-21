@@ -108,6 +108,23 @@ function getWindSpeedColor(value) {
   return "#9b63cf";
 }
 
+function cellGradient(colors, values, i) {
+  const cur = colors[i];
+  if (!cur) return {};
+  const curVal = values[i];
+  const leftVal = i > 0 ? values[i - 1] : null;
+  const rightVal = i < values.length - 1 ? values[i + 1] : null;
+  // gradient is owned by the lower-value cell; higher-value neighbors stay solid
+  const leftColor =
+    leftVal !== null && leftVal > curVal ? (colors[i - 1] ?? cur) : cur;
+  const rightColor =
+    rightVal !== null && rightVal > curVal ? (colors[i + 1] ?? cur) : cur;
+  if (leftColor === cur && rightColor === cur) return { background: cur };
+  return {
+    background: `linear-gradient(to right, ${leftColor}, ${cur} 50%, ${rightColor})`,
+  };
+}
+
 function formatMetric(value, unit, digits = 0) {
   return `${value.toFixed(digits)}${unit}`;
 }
@@ -157,6 +174,28 @@ export function ForecastTable({
     return acc;
   }, {});
   const columnIsDay = columns.map((col) => isDaytime(col.time, daily));
+  const windValues = columns.map((col) =>
+    hasMetricValue(col.windSpeed)
+      ? Math.round(col.windSpeed * 0.514444)
+      : null,
+  );
+  const windColors = columns.map((col, i) =>
+    windValues[i] !== null ? getWindSpeedColor(windValues[i]) : null,
+  );
+  const gustValues = columns.map((col) =>
+    hasMetricValue(col.windGust)
+      ? Math.round(col.windGust * 0.514444)
+      : null,
+  );
+  const gustColors = columns.map((col, i) =>
+    gustValues[i] !== null ? getWindSpeedColor(gustValues[i]) : null,
+  );
+  const tempValues = columns.map((col) =>
+    hasMetricValue(col.temperature) ? col.temperature : null,
+  );
+  const tempColors = columns.map((col, i) =>
+    tempValues[i] !== null ? getTemperatureColor(tempValues[i]) : null,
+  );
 
   function handleMouseDown(e) {
     const wrap = wrapRef.current;
@@ -304,15 +343,10 @@ export function ForecastTable({
           </tr>
           <tr className="row-temp">
             <th className="row-label">Temperatur [°C]</th>
-            {columns.map((column) => (
-              <td key={`${column.time}-temp`}>
+            {columns.map((column, i) => (
+              <td key={`${column.time}-temp`} style={cellGradient(tempColors, tempValues, i)}>
                 {hasMetricValue(column.temperature) ? (
-                  <span
-                    className="metric-badge"
-                    style={{
-                      backgroundColor: getTemperatureColor(column.temperature),
-                    }}
-                  >
+                  <span className="metric-badge">
                     {formatMetric(column.temperature, "°", 0)}
                   </span>
                 ) : (
@@ -350,17 +384,10 @@ export function ForecastTable({
             >
               Wind [{unitLabel}]
             </th>
-            {columns.map((column) => (
-              <td key={`${column.time}-wind`}>
+            {columns.map((column, i) => (
+              <td key={`${column.time}-wind`} style={cellGradient(windColors, windValues, i)}>
                 {hasMetricValue(column.windSpeed) ? (
-                  <span
-                    className="metric-badge"
-                    style={{
-                      backgroundColor: getWindSpeedColor(
-                        Math.round(column.windSpeed * 0.514444),
-                      ),
-                    }}
-                  >
+                  <span className="metric-badge">
                     {toDisplay(column.windSpeed)}
                   </span>
                 ) : (
@@ -377,17 +404,10 @@ export function ForecastTable({
             >
               Böen [{unitLabel}]
             </th>
-            {columns.map((column) => (
-              <td key={`${column.time}-gusts`}>
+            {columns.map((column, i) => (
+              <td key={`${column.time}-gusts`} style={cellGradient(gustColors, gustValues, i)}>
                 {hasMetricValue(column.windGust) ? (
-                  <span
-                    className="metric-badge"
-                    style={{
-                      backgroundColor: getWindSpeedColor(
-                        Math.round(column.windGust * 0.514444),
-                      ),
-                    }}
-                  >
+                  <span className="metric-badge">
                     {toDisplay(column.windGust)}
                   </span>
                 ) : (
