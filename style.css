@@ -260,7 +260,7 @@ h1 {
 /* Drag-to-scroll cursor and touch behavior */
 .forecast-table-wrap {
   cursor: grab;
-  touch-action: pan-y;
+  touch-action: pan-x;
 }
 .forecast-table-wrap.dragging {
   cursor: grabbing;
@@ -488,6 +488,11 @@ h1 {
   user-select: none;
 }
 
+/* Show full label text by default, hide short version */
+.label-short {
+  display: none;
+}
+
 .row-label-toggle:hover {
   color: var(--accent);
 }
@@ -635,6 +640,24 @@ h1 {
   .metric-badge {
     padding: 6px 2px;
     font-size: 12px;
+  }
+
+  /* On mobile: hide full label text, show short unit label */
+  .label-full {
+    display: none;
+  }
+  .label-short {
+    display: inline;
+  }
+
+  /* Narrow the sticky first column so more data columns are visible */
+  .forecast-table.fill th.row-label-header,
+  .forecast-table.fill th.row-label,
+  .forecast-table.fill tbody th.row-label {
+    width: 26px;
+    min-width: 26px;
+    padding-left: 2px;
+    padding-right: 2px;
   }
 }
 
