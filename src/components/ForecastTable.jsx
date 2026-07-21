@@ -156,6 +156,7 @@ export function ForecastTable({
     acc[group.dayKey] = idx % 2;
     return acc;
   }, {});
+  const columnIsDay = columns.map((col) => isDaytime(col.time, daily));
 
   function handleMouseDown(e) {
     const wrap = wrapRef.current;
@@ -244,13 +245,16 @@ export function ForecastTable({
         <thead>
           <tr className="row-hours">
             <th className="row-label-header">Stunden</th>
-            {columns.map((column) => {
+            {columns.map((column, i) => {
               const dayKey = column.time.slice(0, 10);
               const parity = dayParity[dayKey] || 0;
               const dayLabel = formatDayLabel(column.time);
               const dateLabel = formatDayNumber(column.time);
               return (
-                <th key={`${column.time}-header`}>
+                <th
+                  key={`${column.time}-header`}
+                  className={columnIsDay[i] ? undefined : "night-col"}
+                >
                   <div className={`header-stack ${parity ? "alt" : ""}`}>
                     <div className="header-day">{dayLabel}</div>
                     <div className="header-date">{dateLabel}</div>

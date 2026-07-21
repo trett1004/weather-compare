@@ -402,6 +402,15 @@ h1 {
   background: #f0f2f6;
 }
 
+.forecast-table td.night-col,
+.header-stack.night-col {
+  background-color: rgba(20, 20, 60, 0.05);
+}
+
+.forecast-table thead th.night-col .header-stack {
+  background-color: rgba(220, 225, 240, 1);
+}
+
 .header-day {
   font-weight: 600;
   font-size: 12px;
