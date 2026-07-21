@@ -219,8 +219,9 @@ h1 {
 
 .card-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
+  gap: 6px;
   margin-bottom: 12px;
 }
 
@@ -228,6 +229,13 @@ h1 {
   font-size: 17px;
   margin: 0;
   font-weight: 600;
+}
+
+.card-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
 }
 
 .remove-btn {
@@ -245,6 +253,42 @@ h1 {
   background: #2a1818;
 }
 
+.collapse-btn {
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  font-size: 12px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.collapse-btn:hover {
+  color: var(--text);
+  background: #1e2230;
+}
+
+.drag-handle {
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  font-size: 20px;
+  line-height: 1;
+  cursor: grab;
+  padding: 4px 8px;
+  border-radius: 6px;
+  touch-action: none;
+  flex-shrink: 0;
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+}
+
+.drag-handle:hover {
+  color: var(--text);
+}
+
 .forecast-table-wrap {
   overflow-x: auto;
   border: 1px solid var(--border);
@@ -260,7 +304,7 @@ h1 {
 /* Drag-to-scroll cursor and touch behavior */
 .forecast-table-wrap {
   cursor: grab;
-  touch-action: pan-y;
+  touch-action: pan-x;
 }
 .forecast-table-wrap.dragging {
   cursor: grabbing;
@@ -488,6 +532,11 @@ h1 {
   user-select: none;
 }
 
+/* Show full label text by default, hide short version */
+.label-short {
+  display: none;
+}
+
 .row-label-toggle:hover {
   color: var(--accent);
 }
@@ -635,6 +684,50 @@ h1 {
   .metric-badge {
     padding: 6px 2px;
     font-size: 12px;
+    color: #33353d;
+    font-weight: 400;
+  }
+
+  /* On mobile: hide full label text, show short unit label */
+  .label-full {
+    display: none;
+  }
+  .label-short {
+    display: inline;
+  }
+
+  /* Narrow the sticky first column so more data columns are visible */
+  .forecast-table.fill th.row-label-header,
+  .forecast-table.fill th.row-label,
+  .forecast-table.fill tbody th.row-label {
+    width: 40px;
+    min-width: 40px;
+    padding-left: 2px;
+    padding-right: 2px;
+    overflow: visible;
+  }
+}
+
+/* Compact labels also apply when a phone is held in landscape */
+@media (orientation: landscape) and (max-height: 450px) {
+  .label-full {
+    display: none;
+  }
+  .label-short {
+    display: inline;
+  }
+  .forecast-table.fill th.row-label-header,
+  .forecast-table.fill th.row-label,
+  .forecast-table.fill tbody th.row-label {
+    width: 44px;
+    min-width: 44px;
+    padding-left: 2px;
+    padding-right: 2px;
+    overflow: visible;
+  }
+  .metric-badge {
+    color: #33353d;
+    font-weight: 400;
   }
 }
 
@@ -676,6 +769,7 @@ h1 {
 .card-content {
   width: max-content;
   max-width: 100vw;
+  min-width: 100%;
   padding: 16px 16px 0;
 }
 
