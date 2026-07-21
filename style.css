@@ -374,6 +374,21 @@ h1 {
   display: none;
 }
 
+/* Red dashed line marking the current time column */
+.forecast-table th.current-col::before,
+.forecast-table td.current-col::before {
+  width: 2px;
+  background: repeating-linear-gradient(
+    to bottom,
+    #f57674 0px,
+    #f57674 5px,
+    transparent 5px,
+    transparent 10px
+  );
+  transform: none;
+  z-index: 2;
+}
+
 .row-hours th:not(.row-label-header),
 .forecast-table td {
   width: var(--forecast-column-width);

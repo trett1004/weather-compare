@@ -174,18 +174,18 @@ export function ForecastTable({
     return acc;
   }, {});
   const columnIsDay = columns.map((col) => isDaytime(col.time, daily));
+  const [now] = useState(() => new Date().toISOString().slice(0, 16));
+  const currentColIndex = columns.findIndex(
+    (col) => col.time.slice(0, 16) >= now,
+  );
   const windValues = columns.map((col) =>
-    hasMetricValue(col.windSpeed)
-      ? Math.round(col.windSpeed * 0.514444)
-      : null,
+    hasMetricValue(col.windSpeed) ? Math.round(col.windSpeed * 0.514444) : null,
   );
   const windColors = columns.map((col, i) =>
     windValues[i] !== null ? getWindSpeedColor(windValues[i]) : null,
   );
   const gustValues = columns.map((col) =>
-    hasMetricValue(col.windGust)
-      ? Math.round(col.windGust * 0.514444)
-      : null,
+    hasMetricValue(col.windGust) ? Math.round(col.windGust * 0.514444) : null,
   );
   const gustColors = columns.map((col, i) =>
     gustValues[i] !== null ? getWindSpeedColor(gustValues[i]) : null,
@@ -292,7 +292,14 @@ export function ForecastTable({
               return (
                 <th
                   key={`${column.time}-header`}
-                  className={columnIsDay[i] ? undefined : "night-col"}
+                  className={
+                    [
+                      !columnIsDay[i] && "night-col",
+                      i === currentColIndex && "current-col",
+                    ]
+                      .filter(Boolean)
+                      .join(" ") || undefined
+                  }
                 >
                   <div className={`header-stack ${parity ? "alt" : ""}`}>
                     <div className="header-day">{dayLabel}</div>
@@ -309,7 +316,7 @@ export function ForecastTable({
         <tbody>
           <tr className="row-icon">
             <th className="row-label">Wetter</th>
-            {columns.map((column) => {
+            {columns.map((column, i) => {
               const weather = WEATHER_ICONS[column.weatherCode];
               const isDay = isDaytime(column.time, daily);
               const icon = weather
@@ -321,7 +328,10 @@ export function ForecastTable({
                 ? weather.description
                 : "unknown weather";
               return (
-                <td key={`${column.time}-weather`}>
+                <td
+                  key={`${column.time}-weather`}
+                  className={i === currentColIndex ? "current-col" : undefined}
+                >
                   <span
                     className="weather-icon"
                     title={description}
@@ -344,7 +354,11 @@ export function ForecastTable({
           <tr className="row-temp">
             <th className="row-label">Temperatur [°C]</th>
             {columns.map((column, i) => (
-              <td key={`${column.time}-temp`} style={cellGradient(tempColors, tempValues, i)}>
+              <td
+                key={`${column.time}-temp`}
+                className={i === currentColIndex ? "current-col" : undefined}
+                style={cellGradient(tempColors, tempValues, i)}
+              >
                 {hasMetricValue(column.temperature) ? (
                   <span className="metric-badge">
                     {formatMetric(column.temperature, "°", 0)}
@@ -357,8 +371,11 @@ export function ForecastTable({
           </tr>
           <tr className="row-rain">
             <th className="row-label">Regen [mm]</th>
-            {columns.map((column) => (
-              <td key={`${column.time}-rain`}>
+            {columns.map((column, i) => (
+              <td
+                key={`${column.time}-rain`}
+                className={i === currentColIndex ? "current-col" : undefined}
+              >
                 {hasMetricValue(column.precipitation) &&
                 column.precipitation > 0 ? (
                   <span
@@ -385,7 +402,11 @@ export function ForecastTable({
               Wind [{unitLabel}]
             </th>
             {columns.map((column, i) => (
-              <td key={`${column.time}-wind`} style={cellGradient(windColors, windValues, i)}>
+              <td
+                key={`${column.time}-wind`}
+                className={i === currentColIndex ? "current-col" : undefined}
+                style={cellGradient(windColors, windValues, i)}
+              >
                 {hasMetricValue(column.windSpeed) ? (
                   <span className="metric-badge">
                     {toDisplay(column.windSpeed)}
@@ -405,7 +426,11 @@ export function ForecastTable({
               Böen [{unitLabel}]
             </th>
             {columns.map((column, i) => (
-              <td key={`${column.time}-gusts`} style={cellGradient(gustColors, gustValues, i)}>
+              <td
+                key={`${column.time}-gusts`}
+                className={i === currentColIndex ? "current-col" : undefined}
+                style={cellGradient(gustColors, gustValues, i)}
+              >
                 {hasMetricValue(column.windGust) ? (
                   <span className="metric-badge">
                     {toDisplay(column.windGust)}
@@ -418,8 +443,11 @@ export function ForecastTable({
           </tr>
           <tr className="row-direction">
             <th className="row-label">Windrichtung</th>
-            {columns.map((column) => (
-              <td key={`${column.time}-direction`}>
+            {columns.map((column, i) => (
+              <td
+                key={`${column.time}-direction`}
+                className={i === currentColIndex ? "current-col" : undefined}
+              >
                 {hasMetricValue(column.windDirection) ? (
                   <span className="wind-direction-badge">
                     <span
