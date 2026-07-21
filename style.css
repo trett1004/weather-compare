@@ -654,10 +654,30 @@ h1 {
   .forecast-table.fill th.row-label-header,
   .forecast-table.fill th.row-label,
   .forecast-table.fill tbody th.row-label {
-    width: 26px;
-    min-width: 26px;
+    width: 40px;
+    min-width: 40px;
     padding-left: 2px;
     padding-right: 2px;
+    overflow: visible;
+  }
+}
+
+/* Compact labels also apply when a phone is held in landscape */
+@media (orientation: landscape) and (max-height: 450px) {
+  .label-full {
+    display: none;
+  }
+  .label-short {
+    display: inline;
+  }
+  .forecast-table.fill th.row-label-header,
+  .forecast-table.fill th.row-label,
+  .forecast-table.fill tbody th.row-label {
+    width: 44px;
+    min-width: 44px;
+    padding-left: 2px;
+    padding-right: 2px;
+    overflow: visible;
   }
 }
 
