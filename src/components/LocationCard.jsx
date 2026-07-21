@@ -64,6 +64,8 @@ export function LocationCard({
     position: "relative",
     zIndex: isDragging ? 1 : undefined,
   };
+
+  const [collapsed, setCollapsed] = useState(false);
   const [forecastState, setForecastState] = useState({
     status: "loading",
     data: null,
@@ -117,27 +119,37 @@ export function LocationCard({
             ⠿
           </button>
           <h2 className="loc-name">{formatLocationTitle(location)}</h2>
-          <button
-            className="remove-btn"
-            type="button"
-            title="Entfernen"
-            onClick={() => onRemove(location.id)}
-          >
-            ✕
-          </button>
+          <div className="card-actions">
+            <button
+              className="collapse-btn"
+              type="button"
+              title={collapsed ? "Ausklappen" : "Einklappen"}
+              onClick={() => setCollapsed((c) => !c)}
+            >
+              {collapsed ? "▶" : "▼"}
+            </button>
+            <button
+              className="remove-btn"
+              type="button"
+              title="Entfernen"
+              onClick={() => onRemove(location.id)}
+            >
+              ✕
+            </button>
+          </div>
         </div>
 
-        {forecastState.status === "loading" && (
+        {!collapsed && forecastState.status === "loading" && (
           <p className="status-message">Lade Wetterdaten...</p>
         )}
 
-        {forecastState.status === "error" && (
+        {!collapsed && forecastState.status === "error" && (
           <p className="status-message error-message">
             Wetterdaten konnten nicht geladen werden.
           </p>
         )}
 
-        {forecastState.status === "ready" && (
+        {!collapsed && forecastState.status === "ready" && (
           <>
             {location.isMock && <WeatherIconGallery />}
             <ForecastTable
