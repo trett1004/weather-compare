@@ -15,6 +15,9 @@ import {
 import { formatDayNumber } from "../utils/formatters";
 
 function sampleForecastColumns(hourly) {
+  const sixHoursAgo = new Date(Date.now() - 6 * 60 * 60 * 1000)
+    .toISOString()
+    .slice(0, 16);
   return (
     hourly.time
       .map((time, index) => ({
@@ -26,10 +29,10 @@ function sampleForecastColumns(hourly) {
         windGust: hourly.windgusts_10m[index],
         windDirection: hourly.winddirection_10m[index],
       }))
-      // select every 3rd hour but starting at 02:00 (hours: 02,05,08,...,23)
+      // select every 3rd hour (02,05,08,...,23) starting from 6 hours before now
       .filter((col) => {
         const hour = new Date(col.time).getHours();
-        return hour % 3 === 2; // 2,5,8,...,23
+        return hour % 3 === 2 && col.time.slice(0, 16) >= sixHoursAgo;
       })
   );
 }
