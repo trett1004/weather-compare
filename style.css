@@ -532,8 +532,8 @@ h1 {
   user-select: none;
 }
 
-/* Show full label text by default, hide short version */
-.label-short {
+/* Icons always visible, full text always hidden */
+.label-full {
   display: none;
 }
 
@@ -545,10 +545,8 @@ h1 {
   gap: 1px;
 }
 
-/* Keep flex layout even when .label-short is overridden to display:inline on mobile */
-.label-short.row-label-icon-unit {
-  display: inline-flex;
-}
+/* Comment kept for clarity */
+/* label-short is shown globally; display is inherited from row-label-icon-unit for icon variants */
 
 .label-icon.weather-icon-image {
   width: 19px;
@@ -723,15 +721,7 @@ h1 {
     font-weight: 400;
   }
 
-  /* On mobile: hide full label text, show short unit label */
-  .label-full {
-    display: none;
-  }
-  .label-short {
-    display: inline;
-  }
-
-  /* Narrow the sticky first column so more data columns are visible */
+  /* On mobile: narrow the sticky first column so more data columns are visible */
   .forecast-table.fill th.row-label-header,
   .forecast-table.fill th.row-label,
   .forecast-table.fill tbody th.row-label {
@@ -743,14 +733,8 @@ h1 {
   }
 }
 
-/* Compact labels also apply when a phone is held in landscape */
+/* Compact column also applies when a phone is held in landscape */
 @media (orientation: landscape) and (max-height: 450px) {
-  .label-full {
-    display: none;
-  }
-  .label-short {
-    display: inline;
-  }
   .forecast-table.fill th.row-label-header,
   .forecast-table.fill th.row-label,
   .forecast-table.fill tbody th.row-label {
