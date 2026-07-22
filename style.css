@@ -537,6 +537,41 @@ h1 {
   display: none;
 }
 
+/* Icon + unit side by side in compact row labels */
+.row-label-icon-unit {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1px;
+}
+
+/* Keep flex layout even when .label-short is overridden to display:inline on mobile */
+.label-short.row-label-icon-unit {
+  display: inline-flex;
+}
+
+.label-icon.weather-icon-image {
+  width: 19px;
+  height: 19px;
+  flex-shrink: 0;
+  color: var(--text-dim);
+  transform: scale(1.5);
+  overflow: visible;
+}
+
+.label-icon.weather-icon-image svg {
+  width: 19px;
+  height: 19px;
+  color: inherit;
+}
+
+.label-unit {
+  font-size: inherit;
+  line-height: 1;
+  color: var(--text-dim);
+  align-self: center;
+}
+
 .row-label-toggle:hover {
   color: var(--accent);
 }

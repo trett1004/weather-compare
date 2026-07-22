@@ -1,5 +1,12 @@
 import React, { useRef, useState, useEffect, useId } from "react";
-import { WEATHER_ICONS } from "../constants";
+import {
+  WEATHER_ICONS,
+  thermometerIcon,
+  umbrellaIcon,
+  windsockWeakIcon,
+  windsockIcon,
+  compassIcon,
+} from "../constants";
 import {
   formatDayLabel,
   formatHourLabel,
@@ -265,7 +272,7 @@ export function ForecastTable({
           <tr className="row-hours">
             <th className="row-label-header">
               <span className="label-full">Stunden</span>
-              <span className="label-short">h</span>
+              <span className="label-short"></span>
             </th>
             {columns.map((column, i) => {
               const dayKey = column.time.slice(0, 10);
@@ -300,7 +307,7 @@ export function ForecastTable({
           <tr className="row-icon">
             <th className="row-label">
               <span className="label-full">Wetter</span>
-              <span className="label-short">☁</span>
+              <span className="label-short"></span>
             </th>
             {columns.map((column, i) => {
               const weather = WEATHER_ICONS[column.weatherCode];
@@ -340,7 +347,13 @@ export function ForecastTable({
           <tr className="row-temp">
             <th className="row-label">
               <span className="label-full">Temperatur [°C]</span>
-              <span className="label-short">°C</span>
+              <span className="label-short row-label-icon-unit">
+                <span
+                  className="label-icon weather-icon-image"
+                  dangerouslySetInnerHTML={{ __html: thermometerIcon }}
+                />
+                <span className="label-unit">°C</span>
+              </span>
             </th>
             {columns.map((column, i) => (
               <td
@@ -361,7 +374,13 @@ export function ForecastTable({
           <tr className="row-rain">
             <th className="row-label">
               <span className="label-full">Regen [mm]</span>
-              <span className="label-short">mm</span>
+              <span className="label-short row-label-icon-unit">
+                <span
+                  className="label-icon weather-icon-image"
+                  dangerouslySetInnerHTML={{ __html: umbrellaIcon }}
+                />
+                <span className="label-unit">mm</span>
+              </span>
             </th>
             {columns.map((column, i) => (
               <td
@@ -392,7 +411,13 @@ export function ForecastTable({
               title="Einheit wechseln"
             >
               <span className="label-full">Wind [{unitLabel}]</span>
-              <span className="label-short">{unitLabel}</span>
+              <span className="label-short row-label-icon-unit">
+                <span
+                  className="label-icon weather-icon-image"
+                  dangerouslySetInnerHTML={{ __html: windsockWeakIcon }}
+                />
+                <span className="label-unit">{unitLabel}</span>
+              </span>
             </th>
             {columns.map((column, i) => (
               <td
@@ -417,7 +442,13 @@ export function ForecastTable({
               title="Einheit wechseln"
             >
               <span className="label-full">Böen [{unitLabel}]</span>
-              <span className="label-short">{unitLabel}</span>
+              <span className="label-short row-label-icon-unit">
+                <span
+                  className="label-icon weather-icon-image"
+                  dangerouslySetInnerHTML={{ __html: windsockIcon }}
+                />
+                <span className="label-unit">{unitLabel}</span>
+              </span>
             </th>
             {columns.map((column, i) => (
               <td
@@ -438,7 +469,12 @@ export function ForecastTable({
           <tr className="row-direction">
             <th className="row-label">
               <span className="label-full">Windrichtung</span>
-              <span className="label-short">→</span>
+              <span className="label-short row-label-icon-unit">
+                <span
+                  className="label-icon weather-icon-image"
+                  dangerouslySetInnerHTML={{ __html: compassIcon }}
+                />
+              </span>
             </th>
             {columns.map((column, i) => (
               <td
