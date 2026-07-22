@@ -499,7 +499,7 @@ h1 {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  padding: 8px 4px;
+  padding: 8px 0;
   background: #f0f2f6;
 }
 
@@ -667,8 +667,8 @@ h1 {
 
 .weather-icon-image {
   display: inline-flex;
-  width: 30px;
-  height: 30px;
+  width: 25px;
+  height: 25px;
 }
 
 .weather-icon-image svg {
@@ -693,7 +693,7 @@ h1 {
   justify-content: center;
   width: 100%;
   min-width: 0;
-  padding: 6px 4px;
+  padding: 6px 0;
   border-radius: 0;
   color: #404654;
   font-weight: 100;
@@ -778,7 +778,7 @@ h1 {
   }
 
   .forecast-table {
-    --forecast-column-width: 38px;
+    --forecast-column-width: 15px;
   }
 
   .metric-badge {
