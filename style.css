@@ -338,6 +338,8 @@ h1 {
   border: 1px solid var(--border);
   border-radius: 12px;
   background: linear-gradient(180deg, #131821 0%, #10141c 100%);
+  width: fit-content;
+  max-width: 100%;
 }
 
 /* ensure the scroll container is positioned so sticky cells reference it correctly */
