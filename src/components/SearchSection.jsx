@@ -86,42 +86,44 @@ export function SearchSection({
           </p>
         </div>
       </div>
-      <div className="search-wrap" ref={wrapperRef}>
-        <input
-          id="search-input"
-          type="text"
-          placeholder="Ort suchen, z.B. Berlin..."
-          autoComplete="off"
-          value={query}
-          onChange={(event) => {
-            setQuery(event.target.value);
-            if (!isOpen) {
-              setIsOpen(true);
-            }
-          }}
-        />
-        <SearchResults
-          results={activeResults}
-          isVisible={isDropdownOpen}
-          onSelect={handleSelect}
-        />
-      </div>
-      <div className="model-select-wrap">
-        <label htmlFor="model-select" className="model-select-label">
-          Wähle ein Wettermodell:
-        </label>
-        <select
-          id="model-select"
-          className="model-select"
-          value={weatherModel}
-          onChange={(event) => onModelChange(event.target.value)}
-        >
-          {Object.entries(WEATHER_MODELS).map(([id, { label }]) => (
-            <option key={id} value={id}>
-              {label}
-            </option>
-          ))}
-        </select>
+      <div className="search-controls">
+        <div className="search-wrap" ref={wrapperRef}>
+          <input
+            id="search-input"
+            type="text"
+            placeholder="Ort suchen, z.B. Berlin..."
+            autoComplete="off"
+            value={query}
+            onChange={(event) => {
+              setQuery(event.target.value);
+              if (!isOpen) {
+                setIsOpen(true);
+              }
+            }}
+          />
+          <SearchResults
+            results={activeResults}
+            isVisible={isDropdownOpen}
+            onSelect={handleSelect}
+          />
+        </div>
+        <div className="model-select-wrap">
+          <label htmlFor="model-select" className="model-select-label">
+            Wettermodell:
+          </label>
+          <select
+            id="model-select"
+            className="model-select"
+            value={weatherModel}
+            onChange={(event) => onModelChange(event.target.value)}
+          >
+            {Object.entries(WEATHER_MODELS).map(([id, { label }]) => (
+              <option key={id} value={id}>
+                {label}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
       <p className="hint">{hint}</p>
     </header>
