@@ -40,6 +40,17 @@ import thunderstormsDayHailIcon from "@meteocons/svg-static/fill/thunderstorms-d
 import thunderstormsNightHailIcon from "@meteocons/svg-static/fill/thunderstorms-night-hail.svg?raw";
 import thunderstormsExtremeDayHailIcon from "@meteocons/svg-static/fill/thunderstorms-extreme-day-hail.svg?raw";
 import thunderstormsExtremeNightHailIcon from "@meteocons/svg-static/fill/thunderstorms-extreme-night-hail.svg?raw";
+import thermometerIconRaw from "@meteocons/svg-static/fill/thermometer.svg?raw";
+import umbrellaIconRaw from "@meteocons/svg-static/fill/umbrella.svg?raw";
+import windsockWeakIconRaw from "@meteocons/svg-static/fill/windsock-weak.svg?raw";
+import windsockIconRaw from "@meteocons/svg-static/fill/windsock.svg?raw";
+import compassIconRaw from "@meteocons/svg-static/fill/compass.svg?raw";
+
+export const thermometerIcon = thermometerIconRaw;
+export const umbrellaIcon = umbrellaIconRaw;
+export const windsockWeakIcon = windsockWeakIconRaw;
+export const windsockIcon = windsockIconRaw;
+export const compassIcon = compassIconRaw;
 
 export const GEOCODE_URL = "https://geocoding-api.open-meteo.com/v1/search";
 export const FORECAST_URL = "https://api.open-meteo.com/v1/forecast";
