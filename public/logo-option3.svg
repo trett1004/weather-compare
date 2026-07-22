@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 56" width="100" height="56">
+  <!-- Wave line 3 — back, faded -->
+  <path
+    d="M4 46 C16 40 26 52 46 44 C66 36 78 48 96 42"
+    stroke="#4da3ff" stroke-width="3.5" fill="none"
+    stroke-linecap="round" stroke-linejoin="round"
+    opacity="0.35"/>
+
+  <!-- Wave line 2 — middle -->
+  <path
+    d="M4 30 C14 22 28 36 46 27 C64 18 78 32 96 25"
+    stroke="#4da3ff" stroke-width="3.5" fill="none"
+    stroke-linecap="round" stroke-linejoin="round"
+    opacity="0.65"/>
+
+  <!-- Wave line 1 — front, full -->
+  <path
+    d="M4 14 C16 6 26 20 46 11 C66 2 78 16 96 9"
+    stroke="#4da3ff" stroke-width="3.5" fill="none"
+    stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Dots at right end of each line to suggest data points -->
+  <circle cx="96" cy="42" r="3" fill="#4da3ff" opacity="0.35"/>
+  <circle cx="96" cy="25" r="3" fill="#4da3ff" opacity="0.65"/>
+  <circle cx="96" cy="9"  r="3" fill="#4da3ff"/>
+</svg>
