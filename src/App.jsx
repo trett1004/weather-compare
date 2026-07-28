@@ -53,7 +53,7 @@ export default function App() {
       return;
     }
 
-    setLocations((currentLocations) => [...currentLocations, location]);
+    setLocations((currentLocations) => [location, ...currentLocations]);
   }
 
   function handleRemoveLocation(locationId) {
