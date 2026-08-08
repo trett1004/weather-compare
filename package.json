@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "start": "npm run build && node server.js",
+    "start": "npm run build && NODE_ENV=production node --env-file=.env server.js",
+    "startlocal": "npm run build && node --env-file=.env server.js",
     "lint": "eslint src/",
     "test": "jest"
   },
@@ -16,7 +17,11 @@
     "@dnd-kit/sortable": "^10.0.0",
     "@dnd-kit/utilities": "^3.2.2",
     "@meteocons/svg-static": "^0.1.0",
+    "dotenv": "^17.4.2",
     "express": "^4.19.2",
+    "express-session": "^1.19.0",
+    "google-auth-library": "^9.15.1",
+    "pg": "^8.22.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
