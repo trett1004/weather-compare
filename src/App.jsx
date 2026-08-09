@@ -4,6 +4,7 @@ import {
   MAX_LOCATIONS,
   MOCK_WEATHER_LOCATION,
 } from "./constants";
+import { Header } from "./components/Header";
 import { LocationList } from "./components/LocationList";
 import { SearchSection } from "./components/SearchSection";
 import { getSavedLocations, saveLocations } from "./services/locationStorage";
@@ -182,32 +183,11 @@ export default function App() {
 
   return (
     <>
-      <section className="google-signin-panel" aria-label="Google Anmeldung">
-        <div>
-          <h2 className="google-signin-title">Google Sign-In</h2>
-          {googleUser ? (
-            <>
-              <p className="google-signin-status">
-                Angemeldet als {googleUser.email}.
-              </p>
-              <button
-                className="footer-link-btn"
-                type="button"
-                onClick={handleLogout}
-              >
-                Abmelden
-              </button>
-            </>
-          ) : (
-            <p className="google-signin-copy">
-              Melde dich an, um deine Orte geräteübergreifend zu speichern.
-            </p>
-          )}
-        </div>
-        {!googleUser && (
-          <div ref={googleButtonRef} className="google-signin-button" />
-        )}
-      </section>
+      <Header
+        googleUser={googleUser}
+        onLogout={handleLogout}
+        googleButtonRef={googleButtonRef}
+      />
       <SearchSection
         onAddLocation={handleAddLocation}
         hint={hint}
