@@ -71,21 +71,7 @@ export function SearchSection({
   const isDropdownOpen = debouncedQuery.length >= 2 && isOpen;
 
   return (
-    <header className="page-header">
-      <div className="page-header-top">
-        <img
-          src="/logo-option3.svg"
-          alt="WeatherCompare logo"
-          className="site-logo"
-        />
-        <div>
-          <h1>WeatherCompare</h1>
-          <p className="page-subheader">
-            Füge mehrere Orte hinzu und vergleiche ihre Wettervorhersagen auf
-            einen Blick — kein ständiges Wechseln mehr.
-          </p>
-        </div>
-      </div>
+    <section className="search-component">
       <div className="search-controls">
         <div className="search-wrap" ref={wrapperRef}>
           <input
@@ -126,6 +112,6 @@ export function SearchSection({
         </div>
       </div>
       <p className="hint">{hint}</p>
-    </header>
+    </section>
   );
 }
