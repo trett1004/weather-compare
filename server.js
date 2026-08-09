@@ -1,6 +1,5 @@
 import express from "express";
 import path from "path";
-import { fileURLToPath } from "url";
 import session from "express-session";
 import pg from "pg";
 import { OAuth2Client } from "google-auth-library";
@@ -8,10 +7,7 @@ import { OAuth2Client } from "google-auth-library";
 const { Pool } = pg;
 
 const app = express();
-const PORT = process.env.PORT || 3000;
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const distDir = path.join(__dirname, "dist");
+const distDir = path.join(process.cwd(), "dist");
 
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
@@ -168,6 +164,4 @@ app.get("*", (_request, response) => {
   response.sendFile(path.join(distDir, "index.html"));
 });
 
-app.listen(PORT, () => {
-  console.log(`Weather app running at http://localhost:${PORT}`);
-});
+export default app;
