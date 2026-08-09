@@ -858,12 +858,7 @@ h1 {
   }
 
   .location-card {
-    padding: 12px;
-  }
-
-  /* Hide logo on mobile to save space */
-  .site-logo {
-    display: none;
+    padding: 0.5rem;
   }
 
   /* Stack search + model select vertically, each full width */
