@@ -65,6 +65,7 @@ export default function App() {
     if (googleUser) {
       if (!dbLoadedRef.current) return;
       const toSave = locations.filter((l) => !l.isMock);
+      // eslint-disable-next-line @eslint-react/web-api-no-leaked-fetch
       fetch("/api/locations", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
