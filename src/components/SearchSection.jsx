@@ -71,7 +71,7 @@ export function SearchSection({
   const isDropdownOpen = debouncedQuery.length >= 2 && isOpen;
 
   return (
-    <section className="page-header">
+    <section className="search-component">
       <div className="search-controls">
         <div className="search-wrap" ref={wrapperRef}>
           <input
