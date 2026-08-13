@@ -7,8 +7,9 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "start": "npm run build && NODE_ENV=production node --env-file=.env index.js",
-    "startlocal": "npm run build && node --env-file=.env index.js",
+    "start": "NODE_ENV=production node --env-file=.env index.js",
+    "start:build": "npm run build && npm run start",
+    "startlocal": "node --env-file=.env index.js",
     "lint": "eslint src/",
     "test": "jest"
   },

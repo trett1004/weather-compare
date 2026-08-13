@@ -44,6 +44,10 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Validate frontend env
+        run: |
+          test -n "$VITE_GOOGLE_CLIENT_ID" || (echo "VITE_GOOGLE_CLIENT_ID is missing" && exit 1)
+
       - name: Build
         run: npm run build
 
