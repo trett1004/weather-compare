@@ -182,7 +182,7 @@ h1 {
 }
 
 .search-wrap {
-  /* position: relative; */
+  position: relative;
   flex: 1;
   min-width: 180px;
   max-width: 100%;
