@@ -32,6 +32,8 @@ jobs:
     needs: test
     if: github.event_name == 'push'
     runs-on: self-hosted
+    env:
+      VITE_GOOGLE_CLIENT_ID: ${{ secrets.VITE_GOOGLE_CLIENT_ID }}
     steps:
       - uses: actions/checkout@v4
 
