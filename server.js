@@ -7,6 +7,7 @@ import { OAuth2Client } from "google-auth-library";
 const { Pool } = pg;
 
 const app = express();
+app.set("trust proxy", 1);
 const distDir = path.join(process.cwd(), "dist");
 
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
@@ -32,7 +33,6 @@ app.use(express.static(distDir));
 // Verify Google ID token, upsert user, create session
 // Route: receive a Google ID token, verify it, create/update the user, and start a session.
 app.post("/auth/google", async (req, res) => {
-  console.log("authtest: req");
   const { credential } = req.body;
   if (!credential) {
     return res.status(400).json({ error: "Missing credential" });
