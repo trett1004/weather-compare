@@ -29,7 +29,7 @@ Dann im Browser: http://localhost:5173
 npm start
 ```
 
-Dann im Browser: http://localhost:3000
+Dann im Browser: http://127.0.0.1:3000 (lauscht standardmäßig nur lokal; `HOST=0.0.0.0` für alle Interfaces)
 
 ## Funktionsweise
 
