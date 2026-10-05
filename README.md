@@ -48,6 +48,16 @@ Dann im Browser: http://localhost:3000
 - Immutability: Listen werden nur über neue Arrays aktualisiert.
 - Stable Keys: Orte und Forecast-Zellen verwenden stabile, datenbasierte Keys.
 
+## Deployment
+
+Pull-basiert, damit kein GitHub-Job auf dem Server läuft:
+
+1. Jeder Push auf `main` baut nach Lint und Tests ein fertiges Bundle (`dist/`, Server, Produktions-Dependencies) und veröffentlicht es als Release `production`.
+2. Auf dem Server prüft ein systemd-Timer alle 5 Minuten mit `deploy/update.sh`, ob es ein neues Bundle gibt.
+3. Das Skript prüft die Checksumme, entpackt in ein eigenes Release-Verzeichnis, startet die App per pm2 neu und rollt zurück, falls der Health-Check fehlschlägt.
+
+Units: `deploy/systemd/`. Secrets liegen nur auf dem Server in `~/weather-compare/shared/.env`.
+
 ## Nächste Schritte / Ideen
 
 - Stündliche Auflösung statt nur Tageswerte (wie im Screenshot-Vorbild) → `hourly` Parameter nutzen.

@@ -1,0 +1,12 @@
+[Unit]
+Description=Deploy the latest weather-compare production build
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+# Optional overrides, e.g. PATH when node and pm2 come from nvm.
+EnvironmentFile=-%h/weather-compare/deploy.env
+ExecStart=%h/weather-compare/bin/update.sh
+# Leave the pm2 daemon alone if this run had to spawn it.
+KillMode=process

@@ -6,14 +6,17 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+
 jobs:
   test:
     name: Lint & Test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 24
           cache: npm
@@ -27,19 +30,28 @@ jobs:
       - name: Test
         run: npm test
 
-  deploy:
-    name: Deploy to server
+  # Builds a self-contained bundle and publishes it as the rolling "production"
+  # release. The server pulls it from there (see deploy/update.sh), so no job
+  # ever runs on the server itself.
+  release:
+    name: Publish production build
     needs: test
     if: github.event_name == 'push'
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    concurrency:
+      group: production-release
+      cancel-in-progress: false
     env:
       VITE_GOOGLE_CLIENT_ID: ${{ secrets.VITE_GOOGLE_CLIENT_ID }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 24
+          cache: npm
 
       - name: Install dependencies
         run: npm ci
@@ -51,18 +63,23 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Sync files to app directory
+      - name: Assemble bundle
         run: |
-          rsync -a --delete \
-            --exclude='.git' \
-            --exclude='node_modules' \
-            --exclude='.env' \
-            $GITHUB_WORKSPACE/ $HOME/repositories/weather-compare/
+          mkdir bundle
+          cp -r dist server.js index.js package.json package-lock.json bundle/
+          (cd bundle && npm ci --omit=dev)
+          echo "$GITHUB_SHA" > bundle/REVISION
+          tar -czf weather-compare.tar.gz -C bundle .
+          sha256sum weather-compare.tar.gz > weather-compare.sha256
 
-      - name: Install production dependencies
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          cd $HOME/repositories/weather-compare
-          npm ci --omit=dev
-
-      - name: Restart app
-        run: pm2 restart weather-compare --update-env
+          gh release delete production --cleanup-tag --yes || true
+          gh release create production \
+            weather-compare.tar.gz weather-compare.sha256 \
+            --target "$GITHUB_SHA" \
+            --prerelease \
+            --title "Production build" \
+            --notes "Automated build of $GITHUB_SHA, picked up by the server via deploy/update.sh."
